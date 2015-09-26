@@ -18,7 +18,14 @@ var http = require('http');
 var history = [ ];
 var serverHistory = { };
 
-// list of currently connected clients (users)
+
+function pushClientData(data) {
+
+    console.log(data);
+
+}
+
+
 var clients = [ ];
 
 
@@ -27,7 +34,7 @@ var clients = [ ];
  * HTTP server
  */
 var server = http.createServer(function(request, response) {
-    // Not important for us. We're writing WebSocket server, not HTTP server
+    
 });
 
 server.listen(webSocketsServerPort, function() {
@@ -46,6 +53,7 @@ var wsServer = new webSocketServer({
 // This callback function is called every time someone
 // tries to connect to the WebSocket server
 wsServer.on('request', function(request) {
+    console.log(request);
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
     
     // accept connection - you should check 'request.origin' to make sure that
@@ -98,6 +106,8 @@ wsServer.on('request', function(request) {
             }
         }
     });
+
+
 
     // user disconnected
     connection.on('close', function(connection) {

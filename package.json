@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "getmac": "^1.0.7",
     "node-proc": "0.0.1"
   }
 }
