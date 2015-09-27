@@ -4,12 +4,16 @@ const net = require("net");
 var server = net.createServer(function (conn) {
     console.log("Server: Client connected");
 
+    conn.on('error', function(err){
+        // Handle the connection error.
+	console.log(err);    
+});
+
     // If connection is closed
     conn.on("end", function() {
         console.log('Server: Client disconnected');
         // Close the server
     });
-
     // Handle data from client
     conn.on("data", function(data) {
         data = JSON.parse(data);
@@ -17,6 +21,9 @@ var server = net.createServer(function (conn) {
         
         updateData(conn.remoteAddress, data);
         server.getConnections(function(err, result) {
+            if (err) {
+		console.log(err);
+            }
             console.log(result);
         });
         
@@ -48,7 +55,7 @@ function updateData(ip, data) {
 }
 
 // Listen for connections
-server.listen(8181, "0.0.0.0", function () {
+server.listen(8183, "0.0.0.0", function () {
     console.log("Server: Listening");
 });
 
