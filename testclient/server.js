@@ -14,10 +14,8 @@ var server = net.createServer(function (conn) {
     conn.on("data", function(data) {
         data = JSON.parse(data);
 
-
-        console.log(conn.remoteAddress + ":" + conn.remotePort);
-
-
+        
+        updateData(conn.remoteAddress, data);
         server.getConnections(function(err, result) {
             console.log(result);
         });
@@ -32,6 +30,12 @@ var server = net.createServer(function (conn) {
     });
 
 });
+
+var nodes = {};
+
+function updateData(ip, data) {
+    nodes[ip] = data;
+}
 
 // Listen for connections
 server.listen(8181, "0.0.0.0", function () {
