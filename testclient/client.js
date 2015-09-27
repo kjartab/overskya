@@ -5,7 +5,7 @@ var os = require('os');
 
 // Create a socket (client) that connects to the server
 var socket = new net.Socket();
-socket.connect(8182, "10.0.0.116", function () {
+socket.connect(8183, "10.0.0.116", function () {
     console.log("Client: Connected to server");
 });
 
