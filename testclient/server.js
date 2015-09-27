@@ -20,7 +20,7 @@ var server = net.createServer(function (conn) {
             console.log(result);
         });
         console.log("Response from client: %s", data.response);
-            
+        console.log(nodes);    
         // Let's response with a hello message
         conn.write(
             JSON.stringify(
@@ -38,6 +38,6 @@ function updateData(ip, data) {
 }
 
 // Listen for connections
-server.listen(8181, "0.0.0.0", function () {
+server.listen(8182, "0.0.0.0", function () {
     console.log("Server: Listening");
 });
