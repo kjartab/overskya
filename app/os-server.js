@@ -1,5 +1,7 @@
 const net = require("net");
 
+process.title = 'overskya';
+
 // Create a simple server
 var server = net.createServer(function (conn) {
     console.log("Server: Client connected");
@@ -60,8 +62,6 @@ server.listen(8183, "0.0.0.0", function () {
 });
 
 
-process.title = 'overskya';
-
 var webSocketsServerPort = 8001;
 
 var webSocketServer = require('websocket').server;
@@ -103,10 +103,8 @@ wsServer.on('request', function(request) {
 
     // send back chat history
     if (nodes.length > 0) {
-        connection.sendUTF(JSON.stringify( { type: 'status', data: nodes} ));
+        connection.sendUTF(JSON.stringify( { type: 'nodes', data: nodes} ));
     }
-
-    
 
     // user disconnected
     connection.on('close', function(connection) {

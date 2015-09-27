@@ -24,7 +24,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script>
-                $(function () {
+$(function () {
     "use strict";
 
     // for better performance - to avoid searching in DOM
@@ -50,7 +50,7 @@
     }
 
     // open connection
-    var connection = new WebSocket('ws://www.kartan.no:8001');
+    var connection = new WebSocket('ws://10.0.0.116:8001');
 
     connection.onopen = function () {
         // first we want users to enter their names
@@ -143,7 +143,19 @@
              + (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes())
              + ': ' + message + '</p>');
     }
+    
+    
+    function () {
+    
+    }
+    
+    
+    
+    
 });
+
+
+
 
         </script>
     </body>
