@@ -13,8 +13,14 @@ var server = net.createServer(function (conn) {
     // Handle data from client
     conn.on("data", function(data) {
         data = JSON.parse(data);
-        console.log(data);
-        
+
+
+        console.log(conn.remoteAddress + ":" + conn.remotePort);
+
+
+        server.getConnections(function(err, result) {
+            console.log(result);
+        });
         console.log("Response from client: %s", data.response);
             
         // Let's response with a hello message
@@ -28,6 +34,6 @@ var server = net.createServer(function (conn) {
 });
 
 // Listen for connections
-server.listen(61337, "localhost", function () {
+server.listen(8181, "0.0.0.0", function () {
     console.log("Server: Listening");
 });
