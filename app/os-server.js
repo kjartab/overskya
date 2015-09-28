@@ -1,18 +1,17 @@
 const net = require("net");
 
-process.title = 'overskya';
+    process.title = 'overskya';
 
-// Create a simple server
-var server = net.createServer(function (conn) {
-    console.log("Server: Client connected");
+    // Create a simple server
+    var server = net.createServer(function (conn) {
+        console.log("Server: Client connected");
 
-    conn.on('error', function(err){
-        // Handle the connection error.
-	console.log(err);    
-});
+        conn.on('error', function(err){
+            // Handle the connection error.
+        console.log(err);    
+    });
 
-    // If connection is closed
-    conn.on("end", function() {
+    conn.on("end", function() { 
         console.log('Server: Client disconnected');
         // Close the server
     });
@@ -21,10 +20,10 @@ var server = net.createServer(function (conn) {
         data = JSON.parse(data);
 
         
-        updateData(conn.remoteAddress, data);
+        updateData(Math.random().toString(36).substring(7), conn.remoteAddress, data);
         server.getConnections(function(err, result) {
             if (err) {
-		console.log(err);
+            console.log(err);
             }
             console.log(result);
         });
@@ -37,18 +36,16 @@ var server = net.createServer(function (conn) {
         );
     });
 
-});
+    });
 
 var nodes = {};
+var clients = [];
 
-var clients = [ ];
-
-
-function updateData(ip, data) {
-    nodes[ip] = data;
+function updateData(id, ip, data) {
+    
+    nodes[id] = data;
     
     if (clients.length > 0) {
-         // broadcast message to all connected clients
         var json = JSON.stringify( { type: 'status', data: nodes} );
         for (var i=0; i < clients.length; i++) {
             clients[i].sendUTF(json);
@@ -61,13 +58,9 @@ server.listen(8183, "0.0.0.0", function () {
     console.log("Server: Listening");
 });
 
-
-var webSocketsServerPort = 8001;
-
+var webSocketsServerPort = 8000;
 var webSocketServer = require('websocket').server;
 var http = require('http');
-
-
 
 /**
  * HTTP server
@@ -91,17 +84,11 @@ var wsServer = new webSocketServer({
 wsServer.on('request', function(request) {
     console.log(request);
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
-    
-    // accept connection - you should check 'request.origin' to make sure that
-    // client is connecting from your website
-    // (http://en.wikipedia.org/wiki/Same_origin_policy)
     var connection = request.accept(null, request.origin); 
-    // we need to know client index to remove them on 'close' event
     var index = clients.push(connection) - 1;
 
     console.log((new Date()) + ' Connection accepted.');
 
-    // send back chat history
     if (nodes.length > 0) {
         connection.sendUTF(JSON.stringify( { type: 'nodes', data: nodes} ));
     }
