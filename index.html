@@ -21,7 +21,8 @@
             #nodes {
                 float:left;
             }
-        </style>
+        </style>  
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
         
@@ -36,20 +37,56 @@
             
         </div>
         
-        
         <div id="map-view"></div>
         <div id="graph-view"></div>
-        <div id="summary-view"></div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="../bower_components/openlayers3/build/ol.js"></script>
+        <div id="summary-view">
         
+        
+        </div>
+        
+        <script type="text/template" id="server-box-template">
+        <div class="server-box">
+            <%= text %>
+        </div>
+        </script>
+
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone.js"></script>
+        <!-- <script src="../bower_components/openlayers3/build/ol.js"></script> -->
         
         <script>
-$(function () {
-    "use strict";
+        
+        var ServerStatus = Backbone.Model.extend({
 
-    
-    
+            
+            initialize: function(data) {
+                for (var k in data) {
+                    console.log(data);
+                }
+            },
+
+            author: function() { },
+
+            coordinates: function() { 
+                return "test";
+            },
+
+            allowedToEdit: function(account) {
+            return true;
+            }
+
+        });
+        var Server = Backbone.Collection.extend({
+            model : ServerStatus
+        });
+
+        
+        
+        
+$(function () {
+    "use strict";    
 
     // if user is running mozilla then use it's built-in WebSocket
     window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -62,9 +99,10 @@ $(function () {
         $('span').hide();
         return;
     }
+    
 
     // open connection
-    var connection = new WebSocket('ws://178.62.98.218:8085');
+    var connection = new WebSocket('ws://178.62.98.218:8000');
 
     connection.onopen = function () {
         // first we want users to enter their names
@@ -81,10 +119,13 @@ $(function () {
     
             var json = JSON.parse(message.data);
             update(json.data);
+            var k = new ServerStatus(json);
+            console.log(k);
             
     };
     
     function update(data) {
+        $('#summary-view').empty();
         for (var ip in data) {
             
             var server = data[ip];
@@ -92,9 +133,13 @@ $(function () {
             var id = ip.replace(/\./g, '');
                 
             if (!$('#'+id).length) {
-                var el = $('<div id='+id+'>' + getServerString(server) + '</div>');
-                $('#summary-view').append(el);
+            
+                $('#summary-view').append(_.template($('#server-box-template').html())({text: getServerString(server)}));
+                <!-- var el = $('<div id='+id+'>' + getServerString(server) + '</div>'); -->
+                <!-- $('#summary-view').append(el); -->
             } else {
+            
+                $('#summary-view').append(_.template('#server-box-template')("test"));
                 $('#'+id).text(getServerString(server));
             }
         }
@@ -105,10 +150,15 @@ $(function () {
     function getServerString(server) {
         var ip = 'IP: ' + server.ip;
         var toGig = 1024*1024*1024;
+        var cpus = server.cpus;
+        var cputext = "";
+        for (var i=0; i<cpus.length; i++) {
+            cputext += '<p>' + i +  ': ' + cpus[i].speed +' GHz </p>';
+        }
         var memfree = Number((server.memory.free/toGig).toFixed(2));
         var memtotal = Number((server.memory.total/toGig).toFixed(2));
         var memory = 'mem: ' + memfree + '/' + memtotal + ' GB';
-        return ip + ' : ' + memory;
+        return ip + ' : ' + memory  + '<br> ' + cpus[0].model + '<br>' + cputext;
     }
     /**
      * This method is optional. If the server wasn't able to respond to the
@@ -116,10 +166,10 @@ $(function () {
      * something is wrong.
      */
     setInterval(function() {
+        
         if (connection.readyState !== 1) {
-            status.text('Error');
-            input.attr('disabled', 'disabled').val('Unable to comminucate '
-                                                 + 'with the WebSocket server.');
+            console.log('error');
+            console.log(connection);
         }
     }, 3000);
 
@@ -135,11 +185,10 @@ $(function () {
     
     
     
-    
-    
 });
 
 
+        console.log(Backbone);
 
 
         </script>
