@@ -58,29 +58,50 @@
         
         <script>
         
-        var ServerStatus = Backbone.Model.extend({
+        var Status = Backbone.Model.extend({ });
 
-            
-            initialize: function(data) {
-                for (var k in data) {
-                    console.log(data);
+        var StatusCollection = Backbone.Collection.extend({
+                model : ServerStatus
+        });
+
+
+        var Server = Backbone.Model.extend({
+
+            initialize: function() {
+                this.set('statusCollection', new StatusCollection());
+            },
+
+            addStatus: function(statusData) {
+                var statusCollection = this.get('statusCollection');
+                if (statusCollection.length > 99) {
+                    statusCollection.pop();
                 }
-            },
-
-            author: function() { },
-
-            coordinates: function() { 
-                return "test";
-            },
-
-            allowedToEdit: function(account) {
-            return true;
+                
+                statusCollection.add(new Status(statusData));              
+                
             }
 
         });
-        var Server = Backbone.Collection.extend({
-            model : ServerStatus
+
+        var ServerCollection = Backbone.Collection.extend({
+            model : Server,
+
+            addStatus : function(data) {
+                var server = this.get(data[id]
+                if (server) {
+
+                } else {
+
+                }
+            }
+
         });
+
+        var servers = new ServerCollection();
+        var testserver = new Server({id : "test"});
+
+
+
 
         
         
@@ -120,7 +141,11 @@ $(function () {
             var json = JSON.parse(message.data);
             update(json.data);
             var k = new ServerStatus(json);
-            console.log(k);
+            testserver.addStatus(k);
+            console.log(testserver);
+            // var testserver = servers.get("test");
+            // console.log(testserver);
+            // testserver.add(k);
             
     };
     
@@ -188,7 +213,7 @@ $(function () {
 });
 
 
-        console.log(Backbone);
+
 
 
         </script>
