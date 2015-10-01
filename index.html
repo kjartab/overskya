@@ -17,12 +17,24 @@
                 background-color:#efefef;
                 height:100%;
             }            
+
+            #map-view {
+                width:200px;
+                height:200px;
+            }
+
+            #three-view {
+                width:200px;
+                height:200px;
+            }
             
             #nodes {
                 float:left;
             }
         </style>  
         <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.css">
+
     </head>
     <body>
         
@@ -31,14 +43,14 @@
             
             <ul>
                 <li id="menu-summary">Overview</li>
-                <li id="menu-graph">Load</li>
+                <li id="menu-three">Load</li>
                 <li id="menu-map">Map</li>
             </ul>
             
         </div>
         
         <div id="map-view"></div>
-        <div id="graph-view"></div>
+        <div id="three-view"></div>
         <div id="summary-view">
         
         
@@ -60,6 +72,8 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js"></script>
         <!-- <script src="../bower_components/openlayers3/build/ol.js"></script> -->
         
         <script>
@@ -75,7 +89,21 @@
 
             initialize: function(data) {
                 this.set('os', 'test'); 
+
                 this.set('statusCollection', new StatusCollection());
+                this.get('statusCollection').on('add',
+                    function(status) {
+                        console.log('added status'); 
+                        this.statusCollectionChanged(this);
+
+                    }, this);
+            },
+            statusCollectionChanged: function(model) {
+                // trigger new event.
+                this.trigger('change', this, model);
+            },
+            addedStatus: function() {
+                // this.trigger('statusadded', this);
             },
 
             addStatus: function(statusData) {
@@ -93,6 +121,15 @@
         var ServerCollection = Backbone.Collection.extend({
             model : Server,
 
+            initialize: function() {
+                this.on( "change", 
+                    function(d){                        
+                        console.log('change');
+                        console.log(d);
+                    }, 
+                    this);
+            },
+
             addStatus : function(id, statusData) {
                 var server = this.get(id);
                 if (server) {
@@ -109,14 +146,15 @@
                 server.addStatus(statusData);
                 this.add(server);
             }
+
         });
+
 
         var servers = new ServerCollection();
         var testserver = new Server({id : "test"});
 
 
         var ServerView = Backbone.View.extend({
-
 
             tagName: "li",
 
@@ -129,10 +167,9 @@
             render: function() {
 
                 var server = this.model.toJSON();
-                console.log(server);
                 var statuses = server.statusCollection.toJSON();
                 var status = statuses[statuses.length-1]
-                console.log(status);
+
                 var display = {
                     id : server.id,
                     memory : status.memory,
@@ -148,22 +185,79 @@
 
             tagname : 'ul',
 
-
             initalize: function() {
+                render();
+                this.listenTo(this.collection, 'change', function(d) {
+                    this.render();
+                    console.log('server collection change');
+                });
             },
 
             render: function() {
-                console.log(this.collection);
+                /* Redrawing on every update... */
+                this.$el.empty();
                 this.collection.each(function(server){
-                             console.log(server);
                             var serverView = new ServerView({ model: server });
-                            this.$el.append(serverView.el); // adding all the person objects.
+                            this.$el.append(serverView.el); 
                         }, this);
                 return this;
             }
+
         });
 
+        function getMap() {
+
+            var map = L.map('map-view');
+
+            // create the tile layer with correct attribution
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osm = new L.TileLayer(osmUrl, {});       
+
+            // start the map in South-East England
+            map.setView(new L.LatLng(51.3, 0.7),1);
+            map.addLayer(osm);
+            return map;
+        }
+
+
         
+        
+
+
+        var ServerMapCollectionView = Backbone.View.extend({
+
+            initialize: function() {
+                // getThree();     
+                // this.map = getMap();
+                // this.render();
+                // this.listenTo(this.collection, 'change', function(d) {
+                //     this.render();
+                // });
+            },
+
+            render: function() {
+                L.marker([90*Math.random(), 90*Math.random()]).addTo(this.map);
+            }
+
+        });
+
+        var ServerThreeCollectionView = Backbone.View.extend({
+            initialize: function() {
+                getThree();     
+                this.map = getMap();
+                this.render();
+                this.listenTo(this.collection, 'change', function(d) {
+                    this.render();
+                });
+            },
+
+            render: function() {
+                L.marker([90*Math.random(), 90*Math.random()]).addTo(this.map);
+            }
+        });
+
+        var mapView = new ServerMapCollectionView({ collection: servers });
+        var serverView = new ServerCollectionView({ collection: servers });
         
         
 $(function () {
@@ -199,58 +293,24 @@ $(function () {
     connection.onmessage = function (message) {
     
             var json = JSON.parse(message.data);
-            // update(json.data);
-
             for (var key in json.data) {
                 servers.addStatus(key, json.data[key]);
             };
-                    console.log(servers);
-            var serverView = new ServerCollectionView({ collection: servers });
-            $('#summary-view').empty();
-            $('#summary-view').append(serverView.render().el);   // adding people view in DOM.. 
+
+            updateViews(servers)
+
                     
     };
-    
-    function update(data) {
+
+
+    function updateViews(servers) {
         $('#summary-view').empty();
-        for (var ip in data) {
-            
-            var server = data[ip];
-            server.ip = ip;
-            var id = ip.replace(/\./g, '');
-                
-            if (!$('#'+id).length) {
-            
-                $('#summary-view').append(_.template($('#server-box-template').html())({text: getServerString(server)}));
-                <!-- var el = $('<div id='+id+'>' + getServerString(server) + '</div>'); -->
-                <!-- $('#summary-view').append(el); -->
-            } else {
-            
-                $('#summary-view').append(_.template('#server-box-template')("test"));
-                $('#'+id).text(getServerString(server));
-            }
-        }
+        $('#summary-view').append(serverView.render().el);   // adding people view in DOM.. 
+
     }
-            
-    
-    function getServerString(server) {
-        var ip = 'IP: ' + server.ip;
-        var toGig = 1024*1024*1024;
-        var cpus = server.cpus;
-        var cputext = "";
-        for (var i=0; i<cpus.length; i++) {
-            cputext += '<p>' + i +  ': ' + cpus[i].speed +' GHz </p>';
-        }
-        var memfree = Number((server.memory.free/toGig).toFixed(2));
-        var memtotal = Number((server.memory.total/toGig).toFixed(2));
-        var memory = 'mem: ' + memfree + '/' + memtotal + ' GB';
-        return ip + ' : ' + memory  + '<br> ' + cpus[0].model + '<br>' + cputext;
-    }
-    /**
-     * This method is optional. If the server wasn't able to respond to the
-     * in 3 seconds then show some error message to notify the user that
-     * something is wrong.
-     */
+
+
+
     setInterval(function() {
         
         if (connection.readyState !== 1) {
@@ -259,18 +319,56 @@ $(function () {
         }
     }, 3000);
 
-    /**
-     * Add message to the chat window
-     */
-    function addMessage(author, message, color, dt) {
-        content.prepend('<p><span style="color:' + color + '">' + author + '</span> @ ' +
-             + (dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':'
-             + (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes())
-             + ': ' + message + '</p>');
-    }
-    
+
     
 });
+
+function getThree() {
+
+            var container = $('#three-view');
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera( 70, container.width() / container.height(), 1, 10000 );
+                camera.position.z = 400;
+            
+            var renderer = new THREE.WebGLRenderer();
+            var mesh;
+
+
+
+
+
+                var geometry = new THREE.BoxGeometry( 200, 200, 200 );
+                var material = new THREE.MeshBasicMaterial();
+
+                mesh = new THREE.Mesh( geometry, material );
+                scene.add( mesh );
+
+                renderer.setPixelRatio( window.devicePixelRatio );
+                renderer.setSize( container.width() , container.height() );
+                container.append( renderer.domElement );
+
+
+
+
+
+            animate();
+
+
+
+            function animate() {
+
+                requestAnimationFrame( animate );
+
+                mesh.rotation.x += 0.005;
+                mesh.rotation.y += 0.01;
+
+                renderer.render( scene, camera );
+
+            }
+
+
+
+        }
 
 
 
