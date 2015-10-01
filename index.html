@@ -50,7 +50,13 @@
         </div>
         </script>
 
-        
+        <script type="text/template" id="serverTemplate">
+            <div id=<%=id%>
+            <p>cpus: <%=cpus.length%></p>
+            <p>memory: <%= Number(memory.free/Math.pow(1024,3)).toFixed(2) %> / <%=Number(memory.total/Math.pow(1024,3)).toFixed(2)%> GB</p>
+            </div>
+        </script>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone.js"></script>
@@ -61,13 +67,14 @@
         var Status = Backbone.Model.extend({ });
 
         var StatusCollection = Backbone.Collection.extend({
-                model : ServerStatus
+                model : Status
         });
 
 
         var Server = Backbone.Model.extend({
 
-            initialize: function() {
+            initialize: function(data) {
+                this.set('os', 'test'); 
                 this.set('statusCollection', new StatusCollection());
             },
 
@@ -75,10 +82,10 @@
                 var statusCollection = this.get('statusCollection');
                 if (statusCollection.length > 99) {
                     statusCollection.pop();
-                }
-                
-                statusCollection.add(new Status(statusData));              
-                
+                }                
+                delete statusData['id'];
+                var status = new Status(statusData);
+                statusCollection.add(status);
             }
 
         });
@@ -86,22 +93,75 @@
         var ServerCollection = Backbone.Collection.extend({
             model : Server,
 
-            addStatus : function(data) {
-                var server = this.get(data[id]
+            addStatus : function(id, statusData) {
+                var server = this.get(id);
                 if (server) {
-
+                    server.addStatus(statusData);
                 } else {
-
+                    console.log("adding new server");
+                    this.addServer(id, statusData);
                 }
-            }
+            },
 
+            addServer : function(id, statusData) {
+                var server = new Server();
+                server.set('id', id);
+                server.addStatus(statusData);
+                this.add(server);
+            }
         });
 
         var servers = new ServerCollection();
         var testserver = new Server({id : "test"});
 
 
+        var ServerView = Backbone.View.extend({
 
+
+            tagName: "li",
+
+            template: _.template( $('#serverTemplate').html()),
+
+            initialize: function(){
+                this.render();
+            },
+
+            render: function() {
+
+                var server = this.model.toJSON();
+                console.log(server);
+                var statuses = server.statusCollection.toJSON();
+                var status = statuses[statuses.length-1]
+                console.log(status);
+                var display = {
+                    id : server.id,
+                    memory : status.memory,
+                    cpus : status.cpus
+                }
+                this.$el.html( this.template(display));
+                return this;
+            }
+
+        });
+
+        var ServerCollectionView = Backbone.View.extend({
+
+            tagname : 'ul',
+
+
+            initalize: function() {
+            },
+
+            render: function() {
+                console.log(this.collection);
+                this.collection.each(function(server){
+                             console.log(server);
+                            var serverView = new ServerView({ model: server });
+                            this.$el.append(serverView.el); // adding all the person objects.
+                        }, this);
+                return this;
+            }
+        });
 
         
         
@@ -139,14 +199,16 @@ $(function () {
     connection.onmessage = function (message) {
     
             var json = JSON.parse(message.data);
-            update(json.data);
-            var k = new ServerStatus(json);
-            testserver.addStatus(k);
-            console.log(testserver);
-            // var testserver = servers.get("test");
-            // console.log(testserver);
-            // testserver.add(k);
-            
+            // update(json.data);
+
+            for (var key in json.data) {
+                servers.addStatus(key, json.data[key]);
+            };
+                    console.log(servers);
+            var serverView = new ServerCollectionView({ collection: servers });
+            $('#summary-view').empty();
+            $('#summary-view').append(serverView.render().el);   // adding people view in DOM.. 
+                    
     };
     
     function update(data) {
@@ -169,8 +231,7 @@ $(function () {
             }
         }
     }
-    
-    
+            
     
     function getServerString(server) {
         var ip = 'IP: ' + server.ip;
@@ -207,7 +268,6 @@ $(function () {
              + (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes())
              + ': ' + message + '</p>');
     }
-    
     
     
 });
