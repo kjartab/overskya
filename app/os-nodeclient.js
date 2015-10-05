@@ -24,7 +24,7 @@ setInterval(function(){
 
 	    socket.write(JSON.stringify(
 	    	{ response: "Hey there server!" ,
-	                "id" : "e6420",
+	                "id" : "e4300",
 	    		"cpus": os.cpus(),
 	    		"loadavg": os.loadavg(),
 	    		"memory" : {

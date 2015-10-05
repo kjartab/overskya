@@ -1,0 +1,18 @@
+.server-box {
+    height: auto;
+    display:block;
+    width: 600px;
+    background-color: #efefef;
+    box-shadow: 1px 0px 0px #afafaf;
+    
+    
+}
+
+
+#three-view {
+	display:none;
+}
+
+#map-view {
+	display:none;
+}
