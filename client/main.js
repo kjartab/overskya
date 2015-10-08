@@ -122,7 +122,7 @@
                 this.listenTo(this.collection, 'add', function(d) {
                     console.log("server added");
                     $('#summary-view').empty();
-                    $('#summary-view').append(this.render().el);   // adding people view in DOM.. 
+                    $('#summary-view').append(this.render().el);
                 });
             },
 
