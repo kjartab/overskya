@@ -157,9 +157,11 @@ $(function () {
         return;
     }
     
+    var serverAddress = "ws://178.62.98.218:8000";
+    var serverAddress = "ws://localhost:8000";
 
     // open connection
-    var connection = new WebSocket('ws://178.62.98.218:8000');
+    var connection = new WebSocket(serverAddress);
 
     connection.onopen = function () {
         // first we want users to enter their names
@@ -175,11 +177,11 @@ $(function () {
     connection.onmessage = function (message) {
     
             var json = JSON.parse(message.data);
-            for (var key in json.data) {
-                servers.addStatus(key, json.data[key]);
-            };
-
-
+            servers.addStatus(json.data.id, json.data);
+            console.log(json);
+            // for (var key in json.data) {
+            //     servers.addStatus(key, json.data[key]);
+            // };
                     
     };
 

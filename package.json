@@ -11,6 +11,6 @@
   "dependencies": {
     "getmac": "^1.0.7",
     "node-proc": "0.0.1",
-    "websocket": "^1.0.21"
+    "websocket": "^1.0.22"
   }
 }

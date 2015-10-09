@@ -64,7 +64,7 @@ const net = require("net");
         
     });
 
-    httpServer.listen(webSocketsServerPort, functibide weon() {
+    httpServer.listen(webSocketsServerPort, function() {
         console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
     });
 
