@@ -1,0 +1,73 @@
+<html>
+
+
+
+<body>
+<div id="showIt"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js"></script>
+<script type=”text/javascript” src=”http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js”></script>
+<script id="item-template" type="text/x-jquery-tmpl">
+    <a href="#">${name}</a>
+</script>
+
+<script type="text/javascript">
+Item = Backbone.Model.extend({});
+ItemCollection = Backbone.Collection.extend({
+    model: Item
+});
+
+ItemListView = Backbone.View.extend({
+    tagName: "ul",
+    
+    initialize: function(){
+        _.bindAll(this, "renderItem");
+    },
+    
+    renderItem: function(model){
+        var itemView = new ItemView({model: model});
+        itemView.render();
+        $(this.el).append(itemView.el);
+    },
+    
+    render: function(){
+        this.collection.each(this.renderItem);
+    }
+});
+
+ItemView = Backbone.View.extend({
+    tagName: "li",
+    events: {
+        "click a": "clicked"
+    },
+    
+    clicked: function(e){
+        e.preventDefault();
+        var name = this.model.get("name");
+        alert(name);
+    },
+
+    render: function(){
+        var template = $("#item-template");
+        var html = template.tmpl(this.model.toJSON());
+        $(this.el).append(html);
+    }  
+});
+
+var items = new ItemCollection([
+    {id: 1, name: "item 1"},
+    {id: 2, name: "item 2"},
+    {id: 3, name: "item 3"}
+]);
+
+var view = new ItemListView({collection: items});
+view.render();
+$("#showIt").html(view.el);
+
+</script>
+</body>
+</html>

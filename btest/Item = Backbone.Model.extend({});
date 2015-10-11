@@ -1,0 +1,51 @@
+Item = Backbone.Model.extend({});
+ItemCollection = Backbone.Collection.extend({
+    model: Item
+});
+
+ItemListView = Backbone.View.extend({
+    tagName: "ul",
+    
+    initialize: function(){
+        _.bindAll(this, "renderItem");
+    },
+    
+    renderItem: function(model){
+        var itemView = new ItemView({model: model});
+        itemView.render();
+        $(this.el).append(itemView.el);
+    },
+    
+    render: function(){
+        this.collection.each(this.renderItem);
+    }
+});
+
+ItemView = Backbone.View.extend({
+    tagName: "li",
+    events: {
+        "click a": "clicked"
+    },
+    
+    clicked: function(e){
+        e.preventDefault();
+        var name = this.model.get("name");
+        alert(name);
+    },
+
+    render: function(){
+        var template = $("#item-template");
+        var html = template.tmpl(this.model.toJSON());
+        $(this.el).append(html);
+    }  
+});
+
+var items = new ItemCollection([
+    {id: 1, name: "item 1"},
+    {id: 2, name: "item 2"},
+    {id: 3, name: "item 3"}
+]);
+
+var view = new ItemListView({collection: items});
+view.render();
+$("#showIt").html(view.el);

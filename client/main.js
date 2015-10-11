@@ -11,11 +11,12 @@
 
             initialize: function(data) {
                 this.resetUpdateTimer();
-
+                this.set('deadTime', 0);
                 this.set('statusCollection', new StatusCollection());
                 this.get('statusCollection').on('add',
                     function(status) {
                        // console.log('added status'); 
+                       this.resetTimer();
                         this.statusCollectionChanged(this);
 
                     }, this);
@@ -32,9 +33,28 @@
             updateTimer: null,
 
             resetUpdateTimer: function() {
+                var that = this;
+                this.updateTimer = setTimeout(
+                    function() {
+                        console.log('timeout');
+                        that.setUpdateState(2000);
+                    }, 2000);
+            },
+
+            resetTimer : function() {
+                console.log(this.get('deadTime'));
+                if(this.get('deadTime') >0) {
+                    this.set('deadTime', 0);
+                }
+                console.log(this.get('deadTime'));
                 clearTimeout(this.updateTimer);
-                this.updateTimer = setTimeout(function(){console.log("no updates!!")}, 2000);
-              
+            },
+
+            setUpdateState: function(timePassed) {
+                console.log(this.get('deadTime'));
+                console.log(this.deadTime + timePassed);
+                var newTime = this.get('deadTime') + timePassed;
+               this.set('deadTime', newTime);
             },
 
             addStatus: function(statusData) {
@@ -91,9 +111,24 @@
 
             initialize: function(){
                 this.render();
+
+                this.listenTo(this.model, 'change', function(d) {
+                    //this.render();
+                });
+
+
+                this.model.on('change deadTime', 
+                    function(d) {
+                        if (this.model.get('deadTime') == 0) {
+                           this.$el.css('background-color', 'white');
+                        } else {
+
+                            this.$el.css('background-color', 'red');
+                        }
+                }, this);
             },
 
-            render: function() {
+            render: function(color) {
 
                 var server = this.model.toJSON();
                 var statuses = server.statusCollection.toJSON();
@@ -104,8 +139,7 @@
                     memory : status.memory,
                     cpus : status.cpus
                 }
-                this.$el.html( this.template(display));
-                return this;
+                this.setElement(this.template(display)); 
             }
 
         });
@@ -115,16 +149,18 @@
             tagname : 'ul',
 
             initialize: function(options) {
-                this.listenTo(this.collection, 'change', function(d) {
-                    this.render();
-                });
+
 
                 this.listenTo(this.collection, 'add', function(d) {
-                    console.log("server added");
                     $('#summary-view').empty();
                     $('#summary-view').append(this.render().el);
                 });
             },
+
+            updateViews: function() {
+
+            },
+
 
             render: function() {
                 /* Redrawing on every update... */
