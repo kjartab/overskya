@@ -10,21 +10,19 @@
         var Server = Backbone.Model.extend({
 
             initialize: function(data) {
-                this.resetUpdateTimer();
+                this.recursiveTimer();
                 this.set('deadTime', 0);
                 this.set('statusCollection', new StatusCollection());
                 this.get('statusCollection').on('add',
                     function(status) {
-                       // console.log('added status'); 
-                       this.resetTimer();
+                        this.resetTimer();
                         this.statusCollectionChanged(this);
-
                     }, this);
             },
-            statusCollectionChanged: function(model) {
+            statusCollectionChanged: function() {
                 // trigger new event.
-                this.resetUpdateTimer();
-                this.trigger('status:change', this, model);
+                this.recursiveTimer();
+                this.trigger('status:change', this, this);
             },
             addedStatus: function() {
                 // this.trigger('statusadded', this);
@@ -36,25 +34,31 @@
                 var that = this;
                 this.updateTimer = setTimeout(
                     function() {
-                        console.log('timeout');
                         that.setUpdateState(2000);
                     }, 2000);
             },
 
+            recursiveTimer: function() {
+                var that = this;
+                console.log("recursive timer");
+                this.updateTimer = setTimeout(
+                    function() {
+                        that.setUpdateState(2000);
+                        that.recursiveTimer();
+                    }, 2000);
+
+            },
+
             resetTimer : function() {
-                console.log(this.get('deadTime'));
-                if(this.get('deadTime') >0) {
+                if(this.get('deadTime') > 0) {
                     this.set('deadTime', 0);
                 }
-                console.log(this.get('deadTime'));
                 clearTimeout(this.updateTimer);
             },
 
             setUpdateState: function(timePassed) {
-                console.log(this.get('deadTime'));
-                console.log(this.deadTime + timePassed);
                 var newTime = this.get('deadTime') + timePassed;
-               this.set('deadTime', newTime);
+                this.set('deadTime', newTime);
             },
 
             addStatus: function(statusData) {
@@ -62,25 +66,17 @@
                 if (statusCollection.length > 99) {
                     statusCollection.pop();
                 }                
-                console.log("added: " + statusData['id']);
+
                 delete statusData['id'];
                 var status = new Status(statusData);
                 statusCollection.add(status);
-                console.log(statusCollection);
+
             }
 
         });
 
         var ServerCollection = Backbone.Collection.extend({
             model : Server,
-
-            initialize: function() {
-                this.on( "status:change", 
-                    function(d){ 
-                        this.trigger('change', this, this.collection);
-                    }, 
-                    this);
-            },
 
             addStatus : function(id, statusData) {
                 var server = this.get(id);
@@ -105,30 +101,39 @@
 
         var ServerView = Backbone.View.extend({
 
-            tagName: "li",
-
             template: _.template( $('#serverTemplate').html()),
 
             initialize: function(){
                 this.render();
-
-                this.listenTo(this.model, 'change', function(d) {
-                    //this.render();
-                });
-
-
-                this.model.on('change deadTime', 
-                    function(d) {
-                        if (this.model.get('deadTime') == 0) {
-                           this.$el.css('background-color', 'white');
-                        } else {
-
-                            this.$el.css('background-color', 'red');
-                        }
-                }, this);
+                this.model.on('status:change', this.onStatusChange, this);
+                this.model.on('change deadTime', this.onDeadTimeChange, this);
             },
 
-            render: function(color) {
+            onDeadTimeChange: function(e) {
+                var deadTime = this.model.get('deadTime');
+                console.log(deadTime);
+                if (deadTime == 0) {
+                    /* change marker color to normal */
+                   this.$el.css('background-color', 'white');
+
+                } else if (deadTime < 6000) {
+                    /* change marker to alarm */
+                   this.$el.css('background-color', 'yellow');
+                    
+                } else {
+                    /* change marker color to disconnected */
+                    this.$el.css('background-color', 'red');
+                    
+                }
+            },
+
+            onStatusChange: function(e) {
+                console.log(e);
+                console.log('server view sees change');
+                //this.$el.append('test');
+            },
+
+            render: function() {
 
                 var server = this.model.toJSON();
                 var statuses = server.statusCollection.toJSON();
@@ -146,24 +151,15 @@
 
         var ServerCollectionView = Backbone.View.extend({
 
-            tagname : 'ul',
 
             initialize: function(options) {
-
-
                 this.listenTo(this.collection, 'add', function(d) {
                     $('#summary-view').empty();
                     $('#summary-view').append(this.render().el);
                 });
             },
 
-            updateViews: function() {
-
-            },
-
-
             render: function() {
-                /* Redrawing on every update... */
                 this.$el.empty();
                 this.collection.each(function(server){
                             var serverView = new ServerView({ model: server });
@@ -214,7 +210,6 @@ $(function () {
     
             var json = JSON.parse(message.data);
             servers.addStatus(json.data.id, json.data);
-            console.log(json);
             // for (var key in json.data) {
             //     servers.addStatus(key, json.data[key]);
             // };

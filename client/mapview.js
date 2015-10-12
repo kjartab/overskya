@@ -14,15 +14,63 @@
         }
 
 
-        
+        var ServerMapView = Backbone.View.extend({
+
+            template: _.template( $('#serverTemplate').html()),
+
+            initialize: function(options){
+                this.set('map', map);
+                this.render();
+                this.model.on('change deadTime', this.onDeadTimeChange, this);
+            },
+
+            getMap: function() {
+                return this.get('map');
+            },
+
+            setServerMarker: function() {
+                var latlng = L.latLng(90*Math.random(), 90*Math.random());
+                this.set('marker') = L.CircleMarker(latlng);
+            },
+
+            onDeadTimeChange: function(e) {
+                var deadTime = this.model.get('deadTime');
+                if (deadTime == 0) {
+                    /* change marker color to normal */
+
+                } else if (deadTime > 4000 && deadTime < 6000)) {
+                    /* change marker to alarm */
+                    
+                } else {
+                    /* change marker color to disconnected */
+                    
+                }
+            },
+
+            render: function()) {
+
+                var server = this.model.toJSON();
+                var statuses = server.statusCollection.toJSON();
+                var status = statuses[statuses.length-1]
+
+                var display = {
+                    id : server.id,
+                    memory : status.memory,
+                    cpus : status.cpus
+                }
+                this.setElement(this.template(display)); 
+            }
+
+        });
 
         var ServerMapCollectionView = Backbone.View.extend({
 
             initialize: function() {
                 // getThree();     
-                // this.map = getMap();
-                // this.render();
-                // this.listenTo(this.collection, 'change', function(d) {
+                this.map = getMap();
+                this.render();
+                //this.collection.on('change')
+               // this.listenTo(this.collection, 'change', function(d) {
                 //     this.render();
                 // });
             },
