@@ -19,7 +19,8 @@
             template: _.template( $('#serverTemplate').html()),
 
             initialize: function(options){
-                this.set('map', map);
+                this.set('map', options.map);
+                this.setMarker();
                 this.render();
                 this.model.on('change deadTime', this.onDeadTimeChange, this);
             },
@@ -28,9 +29,14 @@
                 return this.get('map');
             },
 
-            setServerMarker: function() {
+            getMarker: function() {
+                return this.get('marker');
+            }
+
+            setMarker: function() {
                 var latlng = L.latLng(90*Math.random(), 90*Math.random());
-                this.set('marker') = L.CircleMarker(latlng);
+                this.set('marker', L.CircleMarker(latlng));
+                this.getMarker().addTo(this.getMap());
             },
 
             onDeadTimeChange: function(e) {
@@ -48,17 +54,7 @@
             },
 
             render: function()) {
-
-                var server = this.model.toJSON();
-                var statuses = server.statusCollection.toJSON();
-                var status = statuses[statuses.length-1]
-
-                var display = {
-                    id : server.id,
-                    memory : status.memory,
-                    cpus : status.cpus
-                }
-                this.setElement(this.template(display)); 
+                
             }
 
         });

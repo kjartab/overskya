@@ -1,4 +1,5 @@
 const net = require("net");
+var http = require("http");
 
     process.title = 'overskya';
 
@@ -19,7 +20,7 @@ const net = require("net");
         conn.on("data", function(data) {
             data = JSON.parse(data);
 
-            updateData(conn.remoteAddress, data);
+            tryUpdate(conn.remoteAddress, data);
 
             server.getConnections(function(err, result) {
 
@@ -36,16 +37,63 @@ const net = require("net");
 
     var nodes = {};
     var clients = [];
+    var ipLocations = {};
 
-    function updateData(ip, data) {
+    
 
-        data['ip'] = ip
+    function tryUpdate(ip, data) {
+
+        console.log(ipLocations);
+
+        if (ipLocations.hasOwnProperty(ip)) {
+
+            ipData = ipLocations[ip];
+            updateData(ip, ipData, data);
+        } else {
+
+            findGeolocation(ip, function(response) {
+                var str = '';
+
+                //another chunk of data has been recieved, so append it to `str`
+                response.on('data', function (chunk) {
+                    str += chunk;
+                });
+
+                //the whole response has been recieved, so we just print it out here
+                response.on('end', function () {
+                    var ipdata = JSON.parse(str);
+                    ipLocations[ipdata.query] = ipdata;
+
+                    updateData(ip, ipdata, data);
+                });
+
+            });
+        }
+    }
+
+    function updateData(ip, ipData, data) {
+
+        data['ipdata'] = ipData;
+        data['ip'] = ip;
+        
         if (clients.length > 0) {
             var json = JSON.stringify( { type: 'status', data: data} );
             for (var i=0; i < clients.length; i++) {
                 clients[i].sendUTF(json);
             }
         }
+    }
+
+    function findGeolocation(ip, successCallback) {
+
+        var options = {
+            host: 'ip-api.com',
+            path: '/json/'+ip
+        };
+
+
+        http.request(options, successCallback).end();
+
     }
 
     // Listen for connections

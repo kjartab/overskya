@@ -90,6 +90,9 @@
             addServer : function(id, statusData) {
                 var server = new Server();
                 server.set('id', id);
+                console.log(statusData);
+                server.set('lat', statusData.ipdata.lat);
+                server.set('lon', statusData.ipdata.lon);
                 server.addStatus(statusData);
                 this.add(server);
             }
@@ -109,7 +112,7 @@
                 this.model.on('change deadTime', this.onDeadTimeChange, this);
             },
 
-            onDeadTimeChange: function(e) {
+            onDeadTimeChange: function(e) { 
                 var deadTime = this.model.get('deadTime');
                 console.log(deadTime);
                 if (deadTime == 0) {
@@ -130,7 +133,18 @@
             onStatusChange: function(e) {
                 console.log(e);
                 console.log('server view sees change');
+                this.render();
                 //this.$el.append('test');
+                var server = this.model.toJSON();
+                var statuses = server.statusCollection.toJSON();
+                var status = statuses[statuses.length-1]
+
+                var display = {
+                    id : server.id,
+                    memory : status.memory,
+                    cpus : status.cpus
+                }
+                this.$el.html(this.template(display)); 
             },
 
             render: function() {
@@ -144,7 +158,7 @@
                     memory : status.memory,
                     cpus : status.cpus
                 }
-                this.setElement(this.template(display)); 
+                this.$el.html(this.template(display)); 
             }
 
         });
@@ -162,6 +176,7 @@
             render: function() {
                 this.$el.empty();
                 this.collection.each(function(server){
+                            console.log("adding: " + server);
                             var serverView = new ServerView({ model: server });
                             this.$el.append(serverView.el); 
                         }, this);
@@ -171,7 +186,6 @@
         });
 
         
-        var serverCollectionView = new ServerCollectionView({ collection: servers });
         
         
 $(function () {
@@ -210,18 +224,8 @@ $(function () {
     
             var json = JSON.parse(message.data);
             servers.addStatus(json.data.id, json.data);
-            // for (var key in json.data) {
-            //     servers.addStatus(key, json.data[key]);
-            // };
-                    
     };
 
-
-    function updateViews(servers) {
-        $('#summary-view').empty();
-        $('#summary-view').append(serverCollectionView.render().el);   // adding people view in DOM.. 
-
-    }
 
 
 
@@ -236,3 +240,90 @@ $(function () {
 
     
 });
+
+
+function getMap() {
+
+    var map = L.map('map-view');
+
+    // create the tile layer with correct attribution
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osm = new L.TileLayer(osmUrl, {});       
+
+    // start the map in South-East England
+    map.setView(new L.LatLng(51.3, 0.7),1);
+    map.addLayer(osm);
+    return map;
+}
+
+
+var ServerMapView = Backbone.View.extend({
+
+
+
+    initialize: function(options){
+        this.map = options.map;
+        var lat = options.model.get('lat');
+        var lon = options.model.get('lon');
+        this.setMarker(lat, lon);
+        this.model.on('change deadTime', this.onDeadTimeChange, this);
+        this.render();
+
+    },
+
+    getMap: function() {
+        return this.map;
+    },
+
+    getMarker: function() {
+        return this.marker;
+    },
+
+    setMarker: function(lat, lng) {
+        var latlng = L.latLng(lat, lng);
+        this.marker =  new L.CircleMarker(latlng);
+    },
+
+    onDeadTimeChange: function(e) {
+
+        var deadTime = this.model.get('deadTime');
+
+        if (deadTime == 0) {
+            this.getMarker().setStyle({fillColor: '#0000ff'});
+        } else if (deadTime < 6000) {
+            this.getMarker().setStyle({fillColor: '#dddddd'});
+            /* change marker to alarm */
+        } else {
+            this.getMarker().setStyle({fillColor: '#ff0000'});
+        
+            
+        }
+    },
+
+    render: function() {        
+        if (this.getMap().hasLayer(this.getMarker())) {
+            this.getMap().removeLayer(this.getMarker);
+        }
+        this.getMarker().addTo(this.getMap());
+    }
+
+});
+
+var ServerCollectionMapView = Backbone.View.extend({
+
+
+    initialize: function(options) {
+        this.map = options.map;
+        this.listenTo(this.collection, 'add', function(server) {
+            var serverMapView = new ServerMapView({ model: server, map: this.map });
+        });
+    },
+
+    getMap: function() {
+        return this.map;
+    }
+});
+
+var map = getMap();
+        var serverCollectionView = new ServerCollectionView({ collection: servers });
+        var serverCollectionMapView = new ServerCollectionMapView({ collection: servers, map: map});
