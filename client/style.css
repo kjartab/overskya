@@ -1,11 +1,21 @@
+
+body, html {
+    padding:0;
+    margin:0;
+	font-family: 'Jura';
+    height:100%;
+}
+
 .server-box {
+	padding:10px;
     height: auto;
     display:block;
-    width: 600px;
-    background-color: #efefef;
+    width: auto;
     box-shadow: 1px 0px 0px #afafaf;
-    
-    
+}
+
+div.server-box:hover {
+	background-color: #343434;
 }
 
 
@@ -14,5 +24,80 @@
 }
 
 #map-view {
-	width:500px;
+	height:900px;
+	width:700px;
+	bottom:0;
 }
+
+#firstbar {
+    float:left;
+    width:150px;
+    background-color:#efefef;
+    height:100%;
+}   
+.menu h3 {
+
+    padding: 10px;
+    padding-top:0;
+}
+
+.menu li {
+	list-style-type: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.menu li:hover {
+	background-color:#f9f9f9;
+}
+
+.menu ul {
+	padding:0;
+    list-style-type: none;
+}
+
+
+
+.mainbody-container {
+	float:left;
+	height:100%;
+}
+
+#secondbar {
+	background-color: #343434;
+	color: #efefef;
+    width: 250px;
+    float:left;
+    height:100%;
+}   
+
+#thirdbar {
+
+	float:left;
+}      
+
+
+#three-view {
+    width:200px;
+    height:200px;
+}
+
+#nodes {
+    float:left;
+}
+
+
+.server-info {
+	padding:10px;
+    height: auto;
+    display:block;
+    width: auto;
+    box-shadow: 1px 0px 0px #afafaf;
+}
+
+
+div.server-info:hover {
+	background-color:#565656;
+}
+
+

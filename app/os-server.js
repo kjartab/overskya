@@ -18,19 +18,27 @@ var http = require("http");
 
         // Handle data from client
         conn.on("data", function(data) {
-            data = JSON.parse(data);
 
-            tryUpdate(conn.remoteAddress, data);
+              try {
+                data = JSON.parse(data);
+              } catch (e) {
+                return console.error(e);
+                data = null;
+              }
 
-            server.getConnections(function(err, result) {
+            if (data) {
+                tryUpdate(conn.remoteAddress, data);
+            }
+            
 
-            });
             
             conn.write(
                 JSON.stringify(
                     { response: conn.remoteAddress }
                 )
             );
+
+
         });
 
     });
@@ -42,8 +50,6 @@ var http = require("http");
     
 
     function tryUpdate(ip, data) {
-
-        console.log(ipLocations);
 
         if (ipLocations.hasOwnProperty(ip)) {
 
@@ -85,6 +91,10 @@ var http = require("http");
     }
 
     function findGeolocation(ip, successCallback) {
+
+        if (ip.lastIndexOf("10.", 0) === 0) {
+            ip = "84.48.195.109";
+        }
 
         var options = {
             host: 'ip-api.com',

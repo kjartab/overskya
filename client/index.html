@@ -4,57 +4,44 @@
         <meta charset="utf-8">
         <title>Overskya</title>
         
-        <style>
-        
-            body, html {
-                padding:0;
-                margin:0;
-                height:100%;
-            }
-            #sidebar {
-                float:left;
-                width:300px;
-                background-color:#efefef;
-                height:100%;
-            }            
-
-            #map-view {
-                width:200px;
-                height:200px;
-            }
-
-            #three-view {
-                width:200px;
-                height:200px;
-            }
-            
-            #nodes {
-                float:left;
-            }
-        </style>  
         <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.css">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Jura">
+
 
     </head>
     <body>
         
-        <div id="sidebar">
+        <div class="menu" id="firstbar">
             <h3>Overskya</h3>
-            
             <ul>
+                <li id="menu-map">Map</li>
                 <li id="menu-summary">Overview</li>
                 <li id="menu-three">Load</li>
-                <li id="menu-map">Map</li>
-            </ul>
-            
+            </ul>            
         </div>
-        
-        <div id="map-view"></div>
-        <div id="three-view"></div>
-        <div id="summary-view">
-        
-        
+
+        <div class="mainbody-container">
+
+            <div id="secondbar">      
+                <h4>Servers</h4> 
+                <div id="summary-view"></div>
+            </div>
+
+            <div id="thirdbar">  
+                <div id="map-view"></div>
+                <div id="three-view"></div>
+            </div>
+
+
+
         </div>
+
+
+
+
+
+        <!-- Templates -->
         
         <script type="text/template" id="server-box-template">
         <div class="server-box">
@@ -63,7 +50,7 @@
         </script>
 
         <script type="text/template" id="serverTemplate">
-            <div id=<%=id%>
+            <div class ="server-info" id=<%=id%>
             <p>cpus: <%=cpus.length%></p>
             <p>memory: <%= Number(memory.free/Math.pow(1024,3)).toFixed(2) %> / <%=Number(memory.total/Math.pow(1024,3)).toFixed(2)%> GB</p>
             </div>

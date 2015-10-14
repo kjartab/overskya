@@ -295,8 +295,6 @@ var ServerMapView = Backbone.View.extend({
             /* change marker to alarm */
         } else {
             this.getMarker().setStyle({fillColor: '#ff0000'});
-        
-            
         }
     },
 
