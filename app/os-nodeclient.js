@@ -6,7 +6,8 @@ var os = require('os');
 // Create a socket (client) that connects to the server
 var socket = new net.Socket();
 //var server = "178.62.98.218";
-var server = "localhost";
+//var server = "localhost";
+var server = "84.48.195.109";
 socket.connect(8183, server, function () {
     console.log("Client: Connected to server");
 });
@@ -26,7 +27,7 @@ setInterval(function(){
 
 	    socket.write(JSON.stringify(
 	    	{ response: "Hey there server!" ,
-	                "id" : "e4300",
+	                "id" : "intele5",
 		    		"cpus": os.cpus(),
 		    		"loadavg": os.loadavg(),
 		    		"memory" : {
