@@ -2,6 +2,7 @@
 body, html {
     padding:0;
     margin:0;
+    background-color:#454545;
 	font-family: 'Jura';
     height:100%;
 }
@@ -23,18 +24,26 @@ div.server-box:hover {
 	display:none;
 }
 
-#map-view {
-	height:900px;
-	width:700px;
-	bottom:0;
+.content-view {
+	position:absolute;
+	height:100%;
+	width:100%;
+	transition: all .4s linear;
+	display: block;
 }
 
-#firstbar {
-    float:left;
-    width:150px;
-    background-color:#efefef;
-    height:100%;
-}   
+.content-disabled {
+	width: 0;
+	display:none;
+	transition: none;
+}
+
+
+
+.content-map-view {
+
+}
+
 .menu h3 {
 
     padding: 10px;
@@ -58,28 +67,60 @@ div.server-box:hover {
 
 
 
-.mainbody-container {
-	float:left;
-	height:100%;
+
+
+
+
+
+
+
+
+
+.container {
+    width: 100%;
+    float:left;
+    height:100%;
+    overflow:hidden; 
 }
 
-#secondbar {
+#firstbar {
+
+    float:left;
+    width:150px;
+	height:100%;
+    background:#efefef;
+}
+#secondbar{
 	background-color: #343434;
 	color: #efefef;
     width: 250px;
     float:left;
     height:100%;
-}   
+}
+#thirdbar{
+	height:100%;
+    overflow: hidden;
+    background:#DEDEDE;
+}
 
-#thirdbar {
 
-	float:left;
-}      
+.bottom-menu {
+	bottom:0;
+	position:fixed;
+	width:150px;
+}
+
+   
+#secondbar h4 {
+	padding: 10px;
+	padding-top:0;
+}
+
 
 
 #three-view {
-    width:200px;
-    height:200px;
+    width: 200px;
+    height: 200px;
 }
 
 #nodes {

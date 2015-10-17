@@ -30,8 +30,6 @@ var http = require("http");
                 tryUpdate(conn.remoteAddress, data);
             }
             
-
-            
             conn.write(
                 JSON.stringify(
                     { response: conn.remoteAddress }
@@ -48,6 +46,11 @@ var http = require("http");
     var ipLocations = {};
 
     
+    // Listen for connections
+    server.listen(8183, "0.0.0.0", function () {
+        console.log("Server: Listening");
+    });
+
 
     function tryUpdate(ip, data) {
 
@@ -92,8 +95,9 @@ var http = require("http");
 
     function findGeolocation(ip, successCallback) {
 
-        if (ip.lastIndexOf("10.", 0) === 0) {
-            ip = "84.48.195.109";
+        //IP in private range
+        if (ip.lastIndexOf("10.", 0) === 0 || ip.lastIndexOf("127.", 0) === 0) {
+            ip = "";
         }
 
         var options = {
@@ -101,15 +105,9 @@ var http = require("http");
             path: '/json/'+ip
         };
 
-
         http.request(options, successCallback).end();
 
     }
-
-    // Listen for connections
-    server.listen(8183, "0.0.0.0", function () {
-        console.log("Server: Listening");
-    });
 
     var webSocketsServerPort = 8000;
     var webSocketServer = require('websocket').server;

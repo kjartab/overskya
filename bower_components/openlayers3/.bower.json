@@ -10,6 +10,5 @@
   },
   "_source": "git://github.com/dummas/ol3.git",
   "_target": "~3.0.0",
-  "_originalSource": "openlayers3",
-  "_direct": true
+  "_originalSource": "openlayers3"
 }

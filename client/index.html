@@ -1,74 +1,105 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Overskya</title>
-        
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.css">
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Jura">
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Overskya</title>
+            
+            <link rel="stylesheet" type="text/css" href="style.css">
+            <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.css">
+            <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Jura">
 
 
-    </head>
-    <body>
-        
-        <div class="menu" id="firstbar">
-            <h3>Overskya</h3>
-            <ul>
-                <li id="menu-map">Map</li>
-                <li id="menu-summary">Overview</li>
-                <li id="menu-three">Load</li>
-            </ul>            
-        </div>
+        </head>
+        <body>
+            <div class="menu container">
+            <div  id="firstbar">
+                <h3>Overskya</h3>
+                <ul>
+                    <li id="menu-map">Map</li>
+                    <li id="menu-summary">Overview</li>
+                    <li id="menu-three">Load</li>
+                    <li id="menu-what">What's this?</li>
+                </ul> 
 
-        <div class="mainbody-container">
+                <div class="bottom-menu">
 
-            <div id="secondbar">      
-                <h4>Servers</h4> 
-                <div id="summary-view"></div>
+                <ul><li>Kkk..</li></ul>
+
+                </div>
             </div>
 
-            <div id="thirdbar">  
-                <div id="map-view"></div>
-                <div id="three-view"></div>
+                <div id="secondbar">      
+                    <h4>Servers</h4> 
+                    <div id="summary-view"></div>
+                </div>
+
+                <div id="thirdbar">  
+                    <div id="map-view" class="content-view map-content-view"></div>
+                    <div id="map-openlayers-view" class="content-view map-content-view content-disabled"></div>
+                    <div id="map-tangrams-view" class="content-view map-content-view content-disabled"></div>
+                    <div id="map-cesium-view" class="content-view map-content-view content-disabled"></div>
+                    <div id="three-view" class="content-view content-disabled"></div>
+                    <div id="detail-view" class="content-view content-disabled"></div>
+                    <div id="what-view" class="content-view content-disabled"><p>Severss</p></div>
+                </div>
             </div>
 
 
 
-        </div>
 
-
-
-
-
-        <!-- Templates -->
-        
-        <script type="text/template" id="server-box-template">
-        <div class="server-box">
-            <%= text %>
-        </div>
-        </script>
-
-        <script type="text/template" id="serverTemplate">
-            <div class ="server-info" id=<%=id%>
-            <p>cpus: <%=cpus.length%></p>
-            <p>memory: <%= Number(memory.free/Math.pow(1024,3)).toFixed(2) %> / <%=Number(memory.total/Math.pow(1024,3)).toFixed(2)%> GB</p>
+            <!-- Templates -->
+            
+            <script type="text/template" id="server-box-template">
+            <div class="server-box">
+                <%= text %>
             </div>
-        </script>
+            </script>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js"></script>
-        <!-- <script src="../bower_components/openlayers3/build/ol.js"></script> -->
-        <script src="main.js"></script>
-        <script src="threeview.js"></script>
-        
-        
-        <script>
+            <script type="text/template" id="serverTemplate">
+                <div class ="server-info" id=<%=id%>
+                <p>name: <%=id%></p>
+                <p>cpus: <%=cpus.length%></p>
+                <p>memory: <%= Number(memory.free/Math.pow(1024,3)).toFixed(2) %> / <%=Number(memory.total/Math.pow(1024,3)).toFixed(2)%> GB</p>
+                </div>
+            </script>
+
+            
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js"></script>
+            <!-- <script src="../bower_components/openlayers3/build/ol.js"></script> -->
+            <script src="../dist/client/app.js"></script>
+            <script src="main.js"></script>
+            <script src="threeview.js"></script>
+            
+            
+            <script>
+
+                $map = $('#map-view');
+                $('#menu-map').on('click', function() {
+                    if ($map.hasClass('content-disabled')) {
+                        $map.removeClass('content-disabled');
+                    } else {
+                        $map.addClass('content-disabled');
+                    }                    
+                });
+
+                $what = $('#what-view');
+
+                $('#menu-what').on('click', function() {
+                    if ($what.hasClass('content-disabled')) {
+                        $what.removeClass('content-disabled');
+                    } else {
+                        $what.addClass('content-disabled');
+                    }                    
+                });
 
 
-        </script>
-    </body>
-</html>
+
+
+            </script>
+        </body>
+    </html>

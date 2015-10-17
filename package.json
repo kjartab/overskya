@@ -10,7 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "getmac": "^1.0.7",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-jshint": "^1.11.2",
+    "gulp-uglify": "^1.4.2",
     "node-proc": "0.0.1",
+    "rimraf": "^2.4.3",
     "websocket": "^1.0.22"
   }
 }
