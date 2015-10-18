@@ -1,14 +1,14 @@
-(function(module) {
+var config = {};
 
- 	//var serverName = "server"+Math.random();
- 	var serverName = "regn";
+config.server = {};
+config.client = {};
 
- 	var hostIp = "localhost";
- 	var hostIp = "178.62.98.218";
- 	var hostIp = "84.48.195.109";
- 	
-    module.exports.getName = function () {
-		return serverName;
-    };
+config.client.clientName 	= "regn";
+config.client.debug			= false;
+config.client.timeout 		= 1000;
 
-})(module);
+config.server.ip 			= "localhost";
+config.server.port			= 8183;
+
+
+module.exports = config;
