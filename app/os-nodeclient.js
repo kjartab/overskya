@@ -18,7 +18,9 @@ socket.connect(8183, server, function () {
 // Let's handle the data we get from the server
 socket.on("data", function (data) {
     data = JSON.parse(data);
+    
     console.log("Response from server: %s", data.response);
+    
     // Respond back
     // Close the connection
 });
@@ -31,11 +33,9 @@ setInterval(function(){
 	    		"cpus": os.cpus(),
 	    		"loadavg": os.loadavg(),
 	    		"memory" : {
-	    			"free" : os.freemem(),
+	    			"free" : (os.totalmem() - os.freemem()),
 	    			"total" : os.totalmem()
 	    		}
 	    	}));
-
-
 },1000);
 
