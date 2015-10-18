@@ -15,7 +15,6 @@
 
         onDeadTimeChange: function(e) { 
             var deadTime = this.model.get('deadTime');
-            console.log(deadTime);
             if (deadTime === 0) {
                 /* change marker color to normal */
                this.$el.css('background-color', '#343434');
@@ -32,8 +31,6 @@
         },
 
         onStatusChange: function(e) {
-            console.log(e);
-            console.log('server view sees change');
             this.render();
             //this.$el.append('test');
             var server = this.model.toJSON();
@@ -77,7 +74,6 @@
         render: function() {
             this.$el.empty();
             this.collection.each(function(server){
-                        console.log("adding: " + server);
                         var serverView = new ns.ServerView({ model: server });
                         this.$el.append(serverView.el); 
                     }, this);

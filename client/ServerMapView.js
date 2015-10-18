@@ -57,9 +57,25 @@
 
         initialize: function(options) {
             this.map = options.map;
+
             this.listenTo(this.collection, 'add', function(server) {
                 var serverMapView = new ns.ServerMapView({ model: server, map: this.map });
             });
+            this.active = true;
+        },
+
+        disable: function() {
+            $(this.map._container).addClass('content-disabled');
+            this.active = false;
+        },
+
+        enable: function() {
+            $(this.map._container).removeClass('content-disabled');
+            this.active = true;
+        },
+
+        isActive: function() {
+            return this.active;
         },
 
         getMap: function() {

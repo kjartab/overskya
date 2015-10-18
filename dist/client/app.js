@@ -153,9 +153,25 @@ var k = k || {};
 
         initialize: function(options) {
             this.map = options.map;
+
             this.listenTo(this.collection, 'add', function(server) {
                 var serverMapView = new ns.ServerMapView({ model: server, map: this.map });
             });
+            this.active = true;
+        },
+
+        disable: function() {
+            $(this.map._container).addClass('content-disabled');
+            this.active = false;
+        },
+
+        enable: function() {
+            $(this.map._container).removeClass('content-disabled');
+            this.active = true;
+        },
+
+        isActive: function() {
+            return this.active;
         },
 
         getMap: function() {
@@ -180,6 +196,7 @@ var k = k || {};
                         this.statusCollectionChanged(this);
                     }, this);
             },
+            
             statusCollectionChanged: function() {
                 // trigger new event.
                 this.recursiveTimer();
@@ -277,7 +294,6 @@ var k = k || {};
 
         onDeadTimeChange: function(e) { 
             var deadTime = this.model.get('deadTime');
-            console.log(deadTime);
             if (deadTime === 0) {
                 /* change marker color to normal */
                this.$el.css('background-color', '#343434');
@@ -294,8 +310,6 @@ var k = k || {};
         },
 
         onStatusChange: function(e) {
-            console.log(e);
-            console.log('server view sees change');
             this.render();
             //this.$el.append('test');
             var server = this.model.toJSON();
@@ -339,7 +353,6 @@ var k = k || {};
         render: function() {
             this.$el.empty();
             this.collection.each(function(server){
-                        console.log("adding: " + server);
                         var serverView = new ns.ServerView({ model: server });
                         this.$el.append(serverView.el); 
                     }, this);
@@ -359,6 +372,53 @@ var k = k || {};
 	ns.StatusCollection = Backbone.Collection.extend({
         model : ns.Status
 	});
+
+})(k);
+
+
+(function(ns) {
+
+
+	ns.AppController = function() {
+
+		var menuItems = [];
+
+		function addItem(id, $button, viewController) {
+			var item = {
+				'id' : id,
+				'button' : $button, 
+				'viewController' : viewController
+			};
+			item.button.on('click', function(event) {
+				console.log(item);
+				console.log('click')
+				activateItem(item.id);
+			})
+
+			menuItems.push(item);
+		}
+
+		function activateItem(id) {
+
+			_.each(menuItems, function(item) {
+				console.log(item);
+				console.log(item.id);
+				console.log('and id ' + id);
+				if (item.id == id && !item.viewController.isActive()) {
+					item.viewController.enable();
+				} else if (item.id != id && item.viewController.isActive()) {
+					item.viewController.disable();
+				}
+			});
+		}
+
+
+
+		return {
+			addItem: addItem
+		}
+
+	}
 
 })(k);
 
@@ -426,3 +486,32 @@ function getThree() {
                 L.marker([90*Math.random(), 90*Math.random()]).addTo(this.map);
             }
         });
+(function(ns) {
+
+    ns.WhatView = Backbone.View.extend({
+
+        initialize: function(options) {
+            this.$el = options.$el;
+            this.$el.html('<div class="what-container"><h4>Server monitoring</h4><p>This is a simple, real-time application for monitoring the load of servers I maintain. The application is built with a Node-backend using TCP communication between servers, and relaying this information using Websocket to the web client.</p><p>More to come.</p></div>');
+            this.active = false;
+        },
+
+        disable: function() {
+            this.$el.addClass('content-disabled');
+            this.active = false;
+        },
+
+        enable: function() {
+            this.$el.removeClass('content-disabled');
+            this.active = true;
+        },
+
+        isActive: function() {
+            this.active = false;
+        }
+
+    });
+
+})(k);
+                    
+            

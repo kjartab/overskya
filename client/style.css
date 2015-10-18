@@ -33,6 +33,7 @@ div.server-box:hover {
 
 .content-disabled {
 	width: 0;
+    height:0;
 	display:none;
 	transition: none;
 }
@@ -141,3 +142,10 @@ div.server-info:hover {
 }
 
 
+#what-view {
+    background: #DEDEDE;
+}
+
+.what-container {
+    padding:10px;
+}

@@ -17,8 +17,7 @@
                 <h3>Overskya</h3>
                 <ul>
                     <li id="menu-map">Map</li>
-                    <li id="menu-summary">Overview</li>
-                    <li id="menu-three">Load</li>
+                    <!-- <li id="menu-summary">Overview</li> -->
                     <li id="menu-what">What's this?</li>
                 </ul> 
 
@@ -35,12 +34,8 @@
                 </div>
 
                 <div id="thirdbar">  
-                    <div id="map-view" class="content-view content-disabled map-content-view"></div>
-                    <div id="map-openlayers-view" class="content-view map-content-view content-disabled"></div>
-                    <div id="map-tangrams-view" class="content-view map-content-view content-disabled"></div>
-                    <div id="map-cesium-view" class="content-view map-content-view "></div>
-                    <div id="three-view" class="content-view content-disabled"></div>
-                    <div id="detail-view" class="content-view content-disabled"></div>
+                    <div id="map-view" class="content-view map-content-view"></div>
+                    <div id="map-cesium-view" class="content-view map-content-view content-disabled"></div>
                     <div id="what-view" class="content-view content-disabled"><p>Severss</p></div>
                 </div>
             </div>
@@ -71,7 +66,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js"></script>
-    <script src="../bower_components/Cesium/Cesium.js" type="text/javascript"></script>
+            <script src="../bower_components/Cesium/Cesium.js" type="text/javascript"></script>
             <!-- <script src="../bower_components/openlayers3/build/ol.js"></script> -->
             <script src="../dist/client/app.js"></script>
             <script src="main.js"></script>
@@ -80,24 +75,30 @@
             
             <script>
 
-                $map = $('#map-view');
-                $('#menu-map').on('click', function() {
-                    if ($map.hasClass('content-disabled')) {
-                        $map.removeClass('content-disabled');
-                    } else {
-                        $map.addClass('content-disabled');
-                    }                    
-                });
+            var controller = new k.AppController();
 
-                $what = $('#what-view');
+            controller.addItem('map', $('#menu-map'), serverCollectionMapView);
+            controller.addItem('what', $('#menu-what'), whatView);
 
-                $('#menu-what').on('click', function() {
-                    if ($what.hasClass('content-disabled')) {
-                        $what.removeClass('content-disabled');
-                    } else {
-                        $what.addClass('content-disabled');
-                    }                    
-                });
+
+                // $map = $('#map-view');
+                // $('#menu-map').on('click', function() {
+                //     if (serverCollectionMapView.isActive()) {
+                //         serverCollectionMapView.disable();
+                //     } else {
+                //         serverCollectionMapView.enable();
+                //     }
+                // });
+
+                // $what = $('#what-view');
+
+                // $('#menu-what').on('click', function() {
+                //     if ($what.hasClass('content-disabled')) {
+                //         $what.removeClass('content-disabled');
+                //     } else {
+                //         $what.addClass('content-disabled');
+                //     }                    
+                // });
 
 
 

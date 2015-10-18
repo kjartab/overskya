@@ -14,6 +14,7 @@
                         this.statusCollectionChanged(this);
                     }, this);
             },
+            
             statusCollectionChanged: function() {
                 // trigger new event.
                 this.recursiveTimer();
