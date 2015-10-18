@@ -92,7 +92,19 @@ var serverCollectionMapView = new k.ServerCollectionMapView({ collection: server
                 geocoder : false, 
                 infoBox: false, 
                 animation: false,
-                orderIndependentTranslucency: false
+                orderIndependentTranslucency: false,
+                skyBox: false,
+                skyAtmosphere:false,
+                fullscreenButton: false,
+                fullscreenButton: false,
+                infoBox: false,
+                babseLayerPicker: false,
+                infoBox: false,
+                homeButton:false,
+                sceneModePicker:false,
+                navigationHelpButton: false,
+                creditContainer: 'attribution'
+
             }
         }
 
