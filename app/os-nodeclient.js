@@ -5,11 +5,8 @@ var os = require('os');
 var config = require('./config.js');
 
 var socket = new net.Socket();
-//var server = "178.62.98.218";
-//var server = "localhost";
-var server = "84.48.195.109";
-var server = "localhost";
-socket.connect(8183, server, function () {
+
+socket.connect(8183, config.getHostIp(), function () {
     console.log("Client: Connected to server");
 });
 
