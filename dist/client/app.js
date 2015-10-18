@@ -300,11 +300,11 @@ var k = k || {};
 
             } else if (deadTime < 6000) {
                 /* change marker to alarm */
-               this.$el.css('background-color', 'yellow');
+               this.$el.css('background-color', '#BF9A72');
                 
             } else {
                 /* change marker color to disconnected */
-                this.$el.css('background-color', 'red');
+                this.$el.css('background-color', '#AA4B31');
                 
             }
         },
@@ -391,9 +391,9 @@ var k = k || {};
 			};
 			item.button.on('click', function(event) {
 				console.log(item);
-				console.log('click')
+				console.log('click');
 				activateItem(item.id);
-			})
+			});
 
 			menuItems.push(item);
 		}
@@ -412,13 +412,10 @@ var k = k || {};
 			});
 		}
 
-
-
 		return {
 			addItem: addItem
-		}
-
-	}
+		};
+	};
 
 })(k);
 

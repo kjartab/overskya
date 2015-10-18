@@ -21,11 +21,11 @@
 
             } else if (deadTime < 6000) {
                 /* change marker to alarm */
-               this.$el.css('background-color', 'yellow');
+               this.$el.css('background-color', '#BF9A72');
                 
             } else {
                 /* change marker color to disconnected */
-                this.$el.css('background-color', 'red');
+                this.$el.css('background-color', '#AA4B31');
                 
             }
         },
