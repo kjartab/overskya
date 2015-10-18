@@ -48,7 +48,7 @@ var http = require("http");
     
     // Listen for connections
     server.listen(8183, "0.0.0.0", function () {
-        console.log("Server: Listening");
+        console.log("Server: Listening port " + 8183);
     });
 
 

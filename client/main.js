@@ -83,3 +83,40 @@ function getMapWidth() {
 var map = getMap();
 var serverCollectionView = new k.ServerCollectionView({ collection: servers });
 var serverCollectionMapView = new k.ServerCollectionMapView({ collection: servers, map: map});
+
+        // config object removing timeline and other elements that are on by default
+        var config = {
+            cesiumViewerOpts : {
+                timeline: false, 
+                baseLayerPicker: false, 
+                geocoder : false, 
+                infoBox: false, 
+                animation: false,
+                orderIndependentTranslucency: false
+            }
+        }
+
+var cesiumViewer = new Cesium.Viewer('map-cesium-view', config.cesiumViewerOpts);
+            
+            
+        // Add the terrain provider (AGI)
+        var cesiumTerrainProvider = new Cesium.CesiumTerrainProvider({
+            url : '//assets.agi.com/stk-terrain/world',
+            requestVertexNormals : true,
+            requestWaterMask: false
+        });
+
+        var scene = cesiumViewer.scene;
+        var globe = scene.globe;
+
+        // Will use local time to estimate actual daylight 
+        globe.enableLighting = true;
+
+        // Depth test: If this isn't on, objects will be visible through the terrain.
+        globe.depthTestAgainstTerrain = true;
+
+
+        cesiumViewer.terrainProvider = cesiumTerrainProvider;
+
+
+var cesium = new k.ServerCollectionCesiumView({collection: servers, cesiumViewer: cesiumViewer})
