@@ -15,9 +15,9 @@
 			};
 			item.button.on('click', function(event) {
 				console.log(item);
-				console.log('click')
+				console.log('click');
 				activateItem(item.id);
-			})
+			});
 
 			menuItems.push(item);
 		}
@@ -36,12 +36,9 @@
 			});
 		}
 
-
-
 		return {
 			addItem: addItem
-		}
-
-	}
+		};
+	};
 
 })(k);
