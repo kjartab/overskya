@@ -70,7 +70,6 @@ function getMap() {
     // start the map in South-East England
     map.setView(new L.LatLng(51.3, 0.7),1);
     map.addLayer(osm);
-    console.log(getMapWidth());
     map.setZoom(4);
     //$('#map-view').css('height', window.innerHeight);
     return map;
@@ -89,7 +88,6 @@ var serverCollectionMapView = new k.ServerCollectionMapView({ collection: server
 
 var whatView = new k.WhatView({ collection: servers, $el: $('#what-view')});
 
-console.log(whatView);
         // config object removing timeline and other elements that are on by default
         var config = {
             cesiumViewerOpts : {
@@ -114,27 +112,29 @@ console.log(whatView);
             }
         }
 
-// var cesiumViewer = new Cesium.Viewer('map-cesium-view', config.cesiumViewerOpts);
+var cesiumDiv= 'map-cesium-view';
+var cesiumViewer = new Cesium.Viewer(cesiumDiv, config.cesiumViewerOpts);
             
             
-//         // Add the terrain provider (AGI)
-//         var cesiumTerrainProvider = new Cesium.CesiumTerrainProvider({
-//             url : '//assets.agi.com/stk-terrain/world',
-//             requestVertexNormals : true,
-//             requestWaterMask: false
-//         });
+        // Add the terrain provider (AGI)
+        var cesiumTerrainProvider = new Cesium.CesiumTerrainProvider({
+            url : '//assets.agi.com/stk-terrain/world',
+            requestVertexNormals : true,
+            requestWaterMask: false
+        });
 
-//         var scene = cesiumViewer.scene;
-//         var globe = scene.globe;
+        var scene = cesiumViewer.scene;
+        var globe = scene.globe;
 
-//         // Will use local time to estimate actual daylight 
-//         globe.enableLighting = true;
+        // Will use local time to estimate actual daylight 
+        globe.enableLighting = true;
 
-//         // Depth test: If this isn't on, objects will be visible through the terrain.
-//         globe.depthTestAgainstTerrain = true;
-
-
-//         cesiumViewer.terrainProvider = cesiumTerrainProvider;
+        // Depth test: If this isn't on, objects will be visible through the terrain.
+        globe.depthTestAgainstTerrain = true;
 
 
-// var cesium = new k.ServerCollectionCesiumView({collection: servers, cesiumViewer: cesiumViewer})
+        cesiumViewer.terrainProvider = cesiumTerrainProvider;
+
+
+var serverCollectionCesiumView = new k.ServerCollectionCesiumView({collection: servers, cesiumViewer: cesiumViewer, container : $('#'+cesiumDiv)});
+

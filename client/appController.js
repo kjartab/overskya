@@ -14,20 +14,15 @@
 				'viewController' : viewController
 			};
 			item.button.on('click', function(event) {
-				console.log(item);
-				console.log('click')
 				activateItem(item.id);
 			})
+			console.log(item);
 
 			menuItems.push(item);
 		}
 
 		function activateItem(id) {
-
 			_.each(menuItems, function(item) {
-				console.log(item);
-				console.log(item.id);
-				console.log('and id ' + id);
 				if (item.id == id && !item.viewController.isActive()) {
 					item.viewController.enable();
 				} else if (item.id != id && item.viewController.isActive()) {

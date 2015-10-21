@@ -17,38 +17,27 @@ var k = k || {};
             this.cesiumViewer = options.cesiumViewer;
             var lat = options.model.get('lat');
             var lon = options.model.get('lon');
-            this.setMarker(lat, lon);
+            var name = this.model.get('id');
+            this.setMarker(lat, lon, name);
             this.model.on('change deadTime', this.onDeadTimeChange, this);
+
             this.render();
 
         },
 
-        getMap: function() {
-            return this.map;
-        },
-
-        getMarker: function() {
-            return this.marker;
-        },
-
-        setMarker: function(lat, lng) {
-            console.log(this);
+        setMarker: function(lat, lng, name) {
             // Adding a marker for Stryn
             var strynMarker = this.cesiumViewer.entities.add({
-              position : Cesium.Cartesian3.fromDegrees(lng, lat, 80),
+              position : Cesium.Cartesian3.fromDegrees(lng, lat, 89990),
               billboard : {
                     image : '../common/img/marker-icon-green.png',
                     show : true, // default
-                    verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
                     scale : 1
               },
               label : {
-                text : 'Stryn',
-                font : '14pt monospace',
-                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                outlineWidth : 2,
-                verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
-                pixelOffset : new Cesium.Cartesian2(0, 32)
+                text : name,
+                font : '10pt monospace',
+                style: Cesium.LabelStyle.FILL_AND_OUTLINE
               }
             });
 
@@ -82,14 +71,33 @@ var k = k || {};
 
 
         initialize: function(options) {
+            this.$container = options.container;
             this.cesiumViewer = options.cesiumViewer;
+            this.active = false;
             this.listenTo(this.collection, 'add', function(server) {
                 var serverMapView = new ns.ServerCesiumView({ model: server, cesiumViewer: this.cesiumViewer });
             });
         },
 
+
+        disable: function() {
+            this.$container.addClass('content-disabled');
+            this.active = false;
+        },
+
+        enable: function() {
+            this.$container.removeClass('content-disabled');
+            this.active = true;
+        },
+
+
+        isActive: function() {
+            return this.active;
+        },
+
+
         getMap: function() {
-            return this.cesiumViewer ;
+            return this.cesiumViewer;
         }
     });
 
@@ -268,6 +276,7 @@ var k = k || {};
             addServer : function(id, statusData) {
                 var server = new ns.Server();
                 server.set('id', id);
+                console.log(statusData);
                 server.set('lat', statusData.ipdata.lat);
                 server.set('lon', statusData.ipdata.lon);
                 server.addStatus(statusData);
@@ -389,20 +398,15 @@ var k = k || {};
 				'viewController' : viewController
 			};
 			item.button.on('click', function(event) {
-				console.log(item);
-				console.log('click')
 				activateItem(item.id);
 			})
+			console.log(item);
 
 			menuItems.push(item);
 		}
 
 		function activateItem(id) {
-
 			_.each(menuItems, function(item) {
-				console.log(item);
-				console.log(item.id);
-				console.log('and id ' + id);
 				if (item.id == id && !item.viewController.isActive()) {
 					item.viewController.enable();
 				} else if (item.id != id && item.viewController.isActive()) {
