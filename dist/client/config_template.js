@@ -1,0 +1,8 @@
+
+
+var config = {
+
+	server : "localhost"
+
+
+}

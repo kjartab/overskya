@@ -268,7 +268,6 @@ var k = k || {};
             addServer : function(id, statusData) {
                 var server = new ns.Server();
                 server.set('id', id);
-                console.log(statusData);
                 server.set('lat', statusData.ipdata.lat);
                 server.set('lon', statusData.ipdata.lon);
                 server.addStatus(statusData);

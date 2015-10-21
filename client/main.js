@@ -1,5 +1,9 @@
 
-$(function () {
+var k = k || {};
+
+k.config = config;
+
+(function (ns) {
     "use strict";    
 
     // if user is running mozilla then use it's built-in WebSocket
@@ -14,8 +18,8 @@ $(function () {
         return;
     }
     
-    var serverAddress = "ws://178.62.98.218:8000";
-    var serverAddress = "ws://localhost:8000";
+    var serverAddress = "ws://" + ns.config.server + ":8000";
+    //var serverAddress = "ws://localhost:8000";
 
     // open connection
     var connection = new WebSocket(serverAddress);
@@ -50,8 +54,9 @@ $(function () {
 
 
     
-});
-var k = k || {};
+})(k);
+
+
 var servers = new k.ServerCollection();
 
 function getMap() {
