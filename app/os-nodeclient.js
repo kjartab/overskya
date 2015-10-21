@@ -16,6 +16,7 @@ var clientName = config.client.clientName;
 function makeConnection () {
     socket.connect(port, host);
 }
+
 function connectEventHandler() {
     console.log('Connected');
     retrying = false;
@@ -49,7 +50,7 @@ function closeEventHandler () {
         console.log('Reconnecting...');
     }
     setTimeout(makeConnection, timeout);
-}
+}connectEventHandler
 
 // Create socket and bind callbacks
 var socket = new net.Socket();
@@ -70,7 +71,7 @@ var interval;
 
 function sendDataEverySecond() {
 	interval = setInterval(function(){
-
+        
 		socket.write(JSON.stringify(
 		{
 			"id" : 	clientName,
