@@ -94,14 +94,19 @@ var whatView = new k.WhatView({ collection: servers, $el: $('#what-view')});
                 timeline: false, 
                 baseLayerPicker: false, 
                 geocoder : false, 
-                infoBox: false, 
                 animation: false,
                 orderIndependentTranslucency: false,
-                skyBox: false,
-                skyAtmosphere:false,
+                skyBox: new Cesium.SkyBox({
+                  sources : {
+                    positiveX : 'skybox_px.png',
+                    negativeX : 'skybox_nx.png',
+                    positiveY : 'skybox_py.png',
+                    negativeY : 'skybox_ny.png',
+                    positiveZ : 'skybox_pz.png',
+                    negativeZ : 'skybox_nz.png'
+                  }, show: false
+                }),
                 fullscreenButton: false,
-                fullscreenButton: false,
-                infoBox: false,
                 babseLayerPicker: false,
                 infoBox: false,
                 homeButton:false,
@@ -125,6 +130,8 @@ var cesiumViewer = new Cesium.Viewer(cesiumDiv, config.cesiumViewerOpts);
 
         var scene = cesiumViewer.scene;
         var globe = scene.globe;
+        console.log(scene);
+        scene.skyAtmosphere.show = false;
 
         // Will use local time to estimate actual daylight 
         globe.enableLighting = true;
