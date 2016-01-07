@@ -1,0 +1,19 @@
+---
+- name: Install NGINX and deploy qmesh
+  hosts: webservers
+  sudo: True
+  vars:
+    projects_dir: /home/kjartan/projects
+  tasks:
+    - name: copy nginx config file
+      copy: src=files/nginx.conf dest=/etc/nginx/conf.d/apps/qmesh
+    - name: install nginx
+      apt: name=nginx update_cache=yes force=yes
+    - name: restart nginx
+      service: name=nginx state=restarted
+    - git:
+        accept_hostkey: True
+        dest: /home/kjartan/projects/qmesh
+        force: yes
+        update: yes
+        repo: https://github.com/kjartab/qmesh
