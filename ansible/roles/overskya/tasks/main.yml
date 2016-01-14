@@ -1,0 +1,9 @@
+---
+- git:
+    accept_hostkey: True
+    dest: /home/ansible/projects/overskya
+    force: yes
+    update: yes
+    repo: https://github.com/kjartab/overskya
+- name: copy nginx config file
+  copy: src=files/nginx.conf dest=/etc/nginx/conf.d/apps/overskya

@@ -5,13 +5,9 @@
   vars:
     projects_dir: /home/kjartan/projects
   tasks:
-    - name: copy nginx config file
-      copy: src=files/nginx.conf dest=/etc/nginx/conf.d/apps/qmesh
-    - name: restart nginx
-      service: name=nginx state=restarted
     - git:
         accept_hostkey: True
-        dest: /home/kjartan/projects/qmesh
+        dest: /home/ansible/projects/overskya
         force: yes
         update: yes
-        repo: https://github.com/kjartab/qmesh
+        repo: https://github.com/kjartab/overskya
