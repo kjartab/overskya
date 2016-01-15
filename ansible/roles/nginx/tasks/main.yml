@@ -4,6 +4,3 @@
 
 - name: restart nginx
   service: name=nginx state=restarted
-
-- name: copy nginx config file
-  copy: src=files/nginx.conf dest=/etc/nginx/conf.d/apps/qmesh

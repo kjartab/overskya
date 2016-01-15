@@ -3,7 +3,7 @@
   hosts: webservers
   sudo: True
   vars:
-    projects_dir: /home/kjartan/projects
+    projects_dir: /home/ansible/projects
   tasks:
     - git:
         accept_hostkey: True
