@@ -50,7 +50,7 @@ function closeEventHandler () {
         console.log('Reconnecting...');
     }
     setTimeout(makeConnection, timeout);
-}connectEventHandler
+}
 
 // Create socket and bind callbacks
 var socket = new net.Socket();

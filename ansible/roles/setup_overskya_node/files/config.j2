@@ -1,0 +1,17 @@
+
+var config = {
+
+	server : {
+		ip: {{ overskya_server_ip }},
+		port: {{ overskya_server_port }}
+	},
+
+
+	client : {
+		clientName : {{ inventory_hostname }},
+		debug : false,
+		timeout : {{ node_timeout }}
+	}
+};
+
+module.exports = config;

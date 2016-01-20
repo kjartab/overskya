@@ -1,13 +1,24 @@
 ---
 - name: Deploy 
-  hosts: webservers
-  sudo: True
-  vars:
-    projects_dir: /home/ansible/projects
-  tasks:
-    - git:
-        accept_hostkey: True
-        dest: /home/ansible/projects/overskya
-        force: yes
-        update: yes
-        repo: https://github.com/kjartab/overskya
+  hosts: local
+  remote_user: ansible
+  roles:
+    - overskya
+
+# #Start the server
+- name: Start overskya-server
+  hosts: local
+  remote_user: ansible
+  roles:
+    - setup_overskya_server
+
+# start the nodes
+- name: Start overskya-node
+  hosts: local
+  remote_user: ansible
+  vars: 
+    overskya_server_ip: "178.62.98.218"
+    overskya_server_port: 8183
+    node_timeout: 1000
+  roles:
+    - setup_overskya_node
