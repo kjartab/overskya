@@ -16,6 +16,6 @@
   "dependencies": {
     "openlayers3": "~3.0.0",
     "backbone": "~1.2.3",
-    "cesium": "~1.7.1"
+    "cesium": "cesiumjs#~1.17.0"
   }
 }
