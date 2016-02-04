@@ -17,7 +17,7 @@
   hosts: local
   remote_user: ansible
   vars: 
-    overskya_server_ip: "178.62.98.218"
+    overskya_server_ip: 10.0.0.116
     overskya_server_port: 8183
     node_timeout: 1000
   roles:

@@ -1,6 +1,6 @@
 ---
-- name: copy nginx config file
-  copy: src=nginx.conf dest=/etc/nginx/conf.d/apps/overskya
+- name: create and copy config file for nginx app
+  template: src=nginx.j2 dest=/etc/nginx/conf.d/apps/overskya
   sudo: yes
 
 - name: restart nginx

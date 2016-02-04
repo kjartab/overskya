@@ -1,0 +1,8 @@
+        
+location /overskya {
+    alias /home/{{ansible_user}}/projects/overskya;	
+}
+
+location /overskya/ws {
+	proxy_pass http://localhost:8000;
+}
