@@ -1,6 +1,6 @@
 ---
 - name: Deploy overskya
-  hosts: local
+  hosts: ansible-nodes
   remote_user: ansible
   vars:
     nodejs_major_version: 0
@@ -11,14 +11,14 @@
 
 # #Start the server
 - name: Start overskya-server
-  hosts: local
+  hosts: ansible-server
   remote_user: ansible
   roles:
     - setup_overskya_server
 
 # start the nodes
 - name: Start overskya-node
-  hosts: local
+  hosts: ansible-nodes
   remote_user: ansible
   vars: 
     overskya_server_ip: 178.62.98.218

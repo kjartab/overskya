@@ -18,7 +18,7 @@ k.config = config;
         return;
     }
     
-    var serverAddress = "ws://" + ns.config.server + ":8000";
+    var serverAddress = "ws://" + ns.config.server + "/overskya/ws";
     //var serverAddress = "ws://localhost:8000";
 
     // open connection
@@ -134,7 +134,7 @@ var cesiumViewer = new Cesium.Viewer(cesiumDiv, config.cesiumViewerOpts);
         scene.skyAtmosphere.show = false;
 
         // Will use local time to estimate actual daylight 
-        globe.enableLighting = true;
+        globe.enableLighting = false;
 
         // Depth test: If this isn't on, objects will be visible through the terrain.
         globe.depthTestAgainstTerrain = true;
