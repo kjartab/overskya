@@ -1,0 +1,15 @@
+---
+- name: install nginx
+  apt: name=nginx update_cache=yes force=yes
+
+- name: Ensure apps folder exists
+  file: path=/etc/nginx/conf.d/apps state=directory
+
+- name: server config
+  template: src=base_server_config.j2 dest=/etc/nginx/sites-enabled/default
+
+- name: create and copy config file for nginx app
+  template: src=overskya_config.j2 dest=/etc/nginx/conf.d/apps/overskya
+
+- name: restart nginx
+  service: name=nginx state=restarted

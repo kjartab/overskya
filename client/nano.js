@@ -1,9 +1,5 @@
 
-var k = k || {};
-
-k.config = config;
-
-(function (ns) {
+n (ns) {
     "use strict";    
 
     // if user is running mozilla then use it's built-in WebSocket
@@ -17,7 +13,8 @@ k.config = config;
         $('span').hide();
         return;
     }
-    //   var serverAddress = "ws://" + ns.config.server + "/overskya/ws";
+    /*
+    var serverAddress = "ws://" + ns.config.server + "/overskya/ws";*/
     var serverAddress = "ws://localhost:8017/overskya/ws";
 
     // open connection

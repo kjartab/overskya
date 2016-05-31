@@ -1,24 +1,28 @@
 ---
 - name: Deploy overskya
-  hosts: overskya-nodes
-  remote_user: ansible
+  hosts: all
+  become: yes
+  vars: 
+    project_folder: '/vagrant'
+    add_server_config: true
+    deploy_folder:  /vagrant
+  remote_user: vagrant 
   roles:
+    - nginx
     - nodejs
     - overskya
 
 # #Start the server
 - name: Start overskya-server
-  hosts: overskya-server
-  remote_user: ansible
+  hosts: all
   roles:
     - setup_overskya_server
 
 # start the nodes
 - name: Start overskya-node
-  hosts: overskya-nodes
-  remote_user: ansible
+  hosts: all
   vars: 
-    overskya_server_ip: 178.62.98.218
+    overskya_server_ip: localhost
     overskya_server_port: 8183
     overskya_websocket_port: 8000
     node_timeout: 1000
