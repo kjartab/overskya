@@ -1,0 +1,19 @@
+
+regn ansible_host=www.kartan.no ansible_user=ansible ansible_port=22
+bakklandet ansible_host=www.search.kartan.no ansible_user=ansible ansible_port=22
+langeland ansible_host=www.langelandskisenter.no ansible_user=ansible ansible_port=22
+#webatlas2 ansible_host=www.kartan.no ansible_user=ansible ansible_port=22
+
+
+[overskya-server]
+regn
+
+[overskya-nodes]
+regn
+langeland
+bakklandet
+
+[overskya]
+regn
+langeland
+bakklandet

@@ -18,7 +18,7 @@ k.config = config;
         return;
     }
     //   var serverAddress = "ws://" + ns.config.server + "/overskya/ws";
-    var serverAddress = "ws://localhost:8017/overskya/ws";
+    var serverAddress = "wss://localhost:8017/overskya/ws";
 
     // open connection
     var connection = new WebSocket(serverAddress);

@@ -1,20 +1,20 @@
 ---
 - name: Deploy 
-  hosts: local
+  hosts: overskya
   remote_user: ansible
   roles:
     - overskya
 
 # #Start the server
 - name: Start overskya-server
-  hosts: www.kartan.no
+  hosts: overskya-servers
   remote_user: ansible
   roles:
     - setup_overskya_server
 
 # start the nodes
 - name: Start overskya-node
-  hosts: local
+  hosts: overskya-nodes
   remote_user: ansible
   vars: 
     overskya_server_ip: www.kartan.no

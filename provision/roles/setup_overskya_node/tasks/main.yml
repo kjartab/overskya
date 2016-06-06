@@ -1,15 +1,15 @@
 ---
-# - name: Check list of Node.js apps running
-#   command: forever list
-#   register: forever_list
-#   changed_when: false
+- name: Check list of Node.js apps running
+  command: forever list
+  register: forever_list
+  changed_when: false
 
-# - name: Stop overskya node if it is running
-#   command: forever stop ~/projects/overskya/app/os-nodeclient.js
-#   when: "forever_list.stdout.find('/home/ansible/projects/overskya/app/os-nodeclient.js') != -1"
+- name: Stop overskya node if it is running
+  command: forever stop ~/projects/overskya/app/os-nodeclient.js
+  when: "forever_list.stdout.find('/home/ansible/projects/overskya/app/os-nodeclient.js') != -1"
 
-# - name: copy overskya node config file
-#   template: src=config.j2 dest=~/projects/overskya/app/config.js
+- name: copy overskya node config file
+  template: src=config.j2 dest=~/projects/overskya/app/config.js
 
-# - name: Start overskya node
-#   command: forever start ~/projects/overskya/app/os-nodeclient.js --minUptime 10000
+- name: Start overskya node
+  command: forever start ~/projects/overskya/app/os-nodeclient.js --minUptime 10000
