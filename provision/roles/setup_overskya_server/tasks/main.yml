@@ -6,15 +6,15 @@
   service: name=nginx state=restarted
 
 - name: npm global install
-  npm: name={{item}} path="~/projects/overskya"
+  npm: name={{item}} path="{{project_folder}}"
   with_items:
     - bower
 
 - name: Install packages based on packages.json
-  npm: path="~/projects/overskya"
+  npm: path="{{project_folder}}"
 
 - name: Install packages based on bower.json
-  bower: path="~/projects/overskya"
+  bower: path="{{project_folder}}"
 
 - name: Check list of Node.js apps running
   command: forever list
@@ -22,9 +22,9 @@
   changed_when: false
 
 - name: Stop server node if it is running
-  command: forever stop ~/projects/overskya/app/os-server.js
-  when: "forever_list.stdout.find('/home/ansible/projects/overskya/app/os-server.js') != -1"
+  command: forever stop {{project_folder}}/app/os-server.js
+  when: "forever_list.stdout.find('{{project_folder}}/app/os-server.js') != -1"
 
 - name: Start overskya server
-  command: forever start ~/projects/overskya/app/os-server.js --minUptime 10000
+  command: forever start {{project_folder}}/app/os-server.js --minUptime 10000
   sudo: no

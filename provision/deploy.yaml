@@ -1,14 +1,24 @@
 ---
-- name: Deploy overskya
+- name: Deploy overskya - same for all 
   hosts: overskya
-  become: yes
   vars: 
     deploy_folder: /home/{{ansible_user}}
-    project_folder: '/{{ansible_user}}'
+    project_folder: '/home/{{ansible_user}}/overskya'
     add_server_config: true
+    nodejs_version: "4.x"
+
   roles:
-    - nodejs
-    - overskya
+    - name: geerlingguy.nodejs
+      become: yes
+  tasks: 
+    - apt: pkg=git state=present
+      become: yes
+    - git:
+        accept_hostkey: True
+        dest: "{{project_folder}}"
+        force: yes
+        update: yes
+        repo: https://github.com/kjartab/overskya
 
 # #Start the server
 - name: Start overskya-server
@@ -16,7 +26,7 @@
   become: yes
   vars: 
     deploy_folder: /home/{{ansible_user}}
-    project_folder: '/{{ansible_user}}'
+    project_folder: '/home/{{ansible_user}}/overskya'
     add_server_config: true
   roles:
     - nginx
@@ -25,17 +35,21 @@
     - restart
     - server
 
+    
+
 # start the nodes
 - name: Start overskya-node
   hosts: overskya-nodes
   vars: 
     deploy_folder: /home/{{ansible_user}}
-    project_folder: '/{{ansible_user}}'
+    project_folder: '/home/{{ansible_user}}/overskya'
     add_server_config: true
-    overskya_server_ip: localhost
+    overskya_server_ip: "178.62.98.218"
     overskya_server_port: 8183
     overskya_websocket_port: 8000
     node_timeout: 1000
   roles:
     - setup_overskya_node
-  tags: restart
+  tags: 
+    - restart
+    - nodes

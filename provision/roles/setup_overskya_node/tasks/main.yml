@@ -3,13 +3,23 @@
   command: forever list
   register: forever_list
   changed_when: false
+  tags: 
+    - start-node
+    - stop-node
+    - restart-node
 
 - name: Stop overskya node if it is running
-  command: forever stop ~/projects/overskya/app/os-nodeclient.js
-  when: "forever_list.stdout.find('/home/ansible/projects/overskya/app/os-nodeclient.js') != -1"
+  command: forever stop {{project_folder}}/app/os-nodeclient.js
+  when: "forever_list.stdout.find('{{project_folder}}/app/os-nodeclient.js') != -1"
+  tags: 
+    - stop-node
+    - restart-node
 
 - name: copy overskya node config file
-  template: src=config.j2 dest=~/projects/overskya/app/config.js
+  template: src=config.j2 dest={{project_folder}}/app/config.js
 
 - name: Start overskya node
-  command: forever start ~/projects/overskya/app/os-nodeclient.js --minUptime 10000
+  command: forever start {{project_folder}}/app/os-nodeclient.js --minUptime 10000
+  tags: 
+    - start-node
+    - restart-node

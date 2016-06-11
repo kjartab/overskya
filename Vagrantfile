@@ -25,6 +25,7 @@ Vagrant.configure(2) do |config|
             "overskya-server" => ["node1"],
             "overskya" => [ "node1", "node2", "node3" ]
         }
+        
         # ansible.verbose = "vvvv"
     end
 

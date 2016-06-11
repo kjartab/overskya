@@ -3,7 +3,10 @@
   vars:
     http_port: 80
     max_clients: 200
+    nodejs_version: "4.x"
   remote_user: root
+  roles:
+    - geerlingguy.nodejs
   tasks:
   - name: ensure apache is at the latest version
     yum: name=httpd state=latest

@@ -1,7 +1,0 @@
----
-- git:
-    accept_hostkey: True
-    dest: ~/projects/overskya
-    force: yes
-    update: yes
-    repo: https://github.com/kjartab/overskya
