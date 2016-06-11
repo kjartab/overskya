@@ -17,7 +17,7 @@ k.config = config;
         $('span').hide();
         return;
     }
-      var serverAddress = "ws://" + ns.config.server + "/overskya/ws";
+      var serverAddress = "wss://" + ns.config.server + "/overskya/ws";
     // var serverAddress = "wss://localhost:8017/overskya/ws";
 
     // open connection
