@@ -20,11 +20,14 @@
   command: forever list
   register: forever_list
   changed_when: false
+  
 
 - name: Stop server node if it is running
   command: forever stop {{project_folder}}/app/os-server.js
   when: "forever_list.stdout.find('{{project_folder}}/app/os-server.js') != -1"
+  
 
 - name: Start overskya server
   command: forever start {{project_folder}}/app/os-server.js --minUptime 10000
-  sudo: no
+  become_user: "{{ansible_user}}"
+  

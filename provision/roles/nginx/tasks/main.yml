@@ -1,6 +1,6 @@
 ---
 - name: install nginx
-  apt: name=nginx update_cache=yes force=yes
+  apt: name=nginx update_cache=yes
 
 - name: Ensure apps folder exists
   file: path=/etc/nginx/conf.d/apps state=directory

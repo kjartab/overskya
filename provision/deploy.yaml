@@ -22,6 +22,7 @@
 
 # #Start the server
 - name: Start overskya-server
+  gather_facts: false
   hosts: overskya-server
   become: yes
   vars: 
@@ -32,13 +33,13 @@
     - nginx
     - setup_overskya_server
   tags: 
-    - restart
     - server
 
     
 
 # start the nodes
 - name: Start overskya-node
+  gather_facts: false
   hosts: overskya-nodes
   vars: 
     deploy_folder: /home/{{ansible_user}}
@@ -50,6 +51,3 @@
     node_timeout: 1000
   roles:
     - setup_overskya_node
-  tags: 
-    - restart
-    - nodes
